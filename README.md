@@ -7,10 +7,10 @@ This is my password management project, used for password and totp.
 ### pbkdf2
 The following links are where i found info on how to use pbkdf2.
 The npm module wasn't working, but thats ok, because there is built-in crypto in the web browsers now, yay.
-https://stackoverflow.com/questions/40459020/angular-js-cryptography-pbkdf2-and-iteration
-https://medium.com/coinmonks/fun-times-with-webcrypto-part-1-pbkdf2-815b1c978c9d
-https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey
-https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
+ - https://stackoverflow.com/questions/40459020/angular-js-cryptography-pbkdf2-and-iteration
+ - https://medium.com/coinmonks/fun-times-with-webcrypto-part-1-pbkdf2-815b1c978c9d
+ - https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey
+ - https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
 
 
 ---
