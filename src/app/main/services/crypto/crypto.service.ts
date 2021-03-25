@@ -60,7 +60,7 @@ export class CryptoService {
   }
 
   /**
-   * Given a Master String (user password), will derive a 64 byte key out of it.
+   * Given a Master String (user password), will derive a 32 byte key out of it.
    *
    * @param password The master string (or password) that the user typed.
    * @param theSalt The string that will be used as a salt when deriving the key.
@@ -73,7 +73,7 @@ export class CryptoService {
       password: string,
       theSalt: string = 'something',
       theHash: string = 'SHA-512',
-      keyLength: number = 64,
+      keyLength: number = 32,
       iterationsCount: number = 1001
     ): Promise<ArrayBuffer>
   {
@@ -92,4 +92,35 @@ export class CryptoService {
 
     return derivation;
   }
+
+  async encryptMessage(abKey: ArrayBuffer, userString: string): Promise<ArrayBuffer> {
+    const enc = new TextEncoder();
+    const encoded = enc.encode(`xxxxxxxxxxxx${userString}`);
+
+    try {
+      const key = await window.crypto.subtle.importKey('raw', abKey, 'PBKDF2', false, ['encrypt', 'decrypt']);
+      console.log('successfully created key out of abKey');
+      // The iv must never be reused with a given key.
+      const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
+      const ciphertext = await window.crypto.subtle.encrypt( { name: 'AES-GCM', iv: randomIV }, key, encoded);
+
+      const buffer = new Uint8Array(ciphertext, 0, 5);
+
+      return buffer;
+    } catch(err) {
+      console.log(`error importing derrived key, because: ${err}`);
+      return new Uint8Array(null, 0, 5);
+    }
+
+  } // encryptMessage
+
+  async decryptMessage(abKey: ArrayBuffer, encryptedAB: ArrayBuffer): Promise<string> {
+    const key = await crypto.subtle.importKey('raw', abKey, 'PBKDF2', false, ['encrypt', 'decrypt']);
+    const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
+
+    const decrypted = await window.crypto.subtle.decrypt( { name: 'AES-GCM', iv: randomIV }, key, encryptedAB);
+
+    const dec = new TextDecoder();
+    return dec.decode(decrypted);
+  } // decryptMessage
 }
