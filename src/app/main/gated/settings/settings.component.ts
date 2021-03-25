@@ -58,8 +58,8 @@ export class SettingsComponent implements OnInit {
     // const derivedKey = await pbkdf2.pbkdf2(password, 'salt', 1, 32, 'sha512');
     const theSalt = 'something';
     const theHash = 'SHA-512';
-    const keyLength = 32;
-    const iterationsCount = 100;
+    const keyLength = 64;
+    const iterationsCount = 1001;
 
     const textEncoder = new TextEncoder();
     const passwordBuffer = textEncoder.encode(password);
