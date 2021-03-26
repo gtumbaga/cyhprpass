@@ -24,18 +24,20 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
 
   async btnClick(): Promise<void> {
     const theKeyBuff = await this.cryptoService.deriveKeyFromMasterString(this.userPW);
-    const theKey = this.cryptoService.ab2str(theKeyBuff);
+    const theKey = this.cryptoService.ab2b64(theKeyBuff);
     const ciphertextValue = `${theKey}...[${theKeyBuff.byteLength} bytes total]`;
     console.log(`the key: ${ciphertextValue}`);
-    console.log(String.fromCharCode.apply(null, new Uint8Array(theKeyBuff)));
 
 
     // now lets try to use the string and encrypt something...
     const stringToEncrypt = 'Gabe was here...';
-    const gotEncrypted = await this.cryptoService.encryptMessage(theKeyBuff, stringToEncrypt);
+    const gotEncrypted = await this.cryptoService.encryptMessage(theKey, 'sodiumsodium', stringToEncrypt);
     const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
     console.log(`${stringToEncrypt} has been encrypted to this: ${gotEncrypted2string}`);
 
+    const gotDecrypted = await this.cryptoService.decryptMessage(theKey, 'sodiumsodium', gotEncrypted2string );
+
+    console.log(`${gotEncrypted2string} has been decrypted to this: ${gotDecrypted}`);
 
 
 

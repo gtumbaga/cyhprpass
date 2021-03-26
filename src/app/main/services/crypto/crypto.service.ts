@@ -46,6 +46,20 @@ export class CryptoService {
     return arrStringCodes.toString();
   }
 
+  ab2b64(buf: ArrayBuffer): string {
+    return btoa(String.fromCharCode(...new Uint8Array(buf)));
+  }
+
+  b642ab(base64: string): ArrayBuffer {
+    const binaryString = window.atob(base64);
+    const len = binaryString.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes.buffer;
+}
+
   /**
    * Converts a string given from ab2str, back to an ArrayBuffer.
    *
@@ -93,13 +107,43 @@ export class CryptoService {
     return derivation;
   }
 
-  async encryptMessage(abKey: ArrayBuffer, userString: string): Promise<ArrayBuffer> {
+  async strKey2CrytoKey(strKey: string, strSalt: string): Promise<CryptoKey> {
+    const enc = new TextEncoder();
+    const saltBuffer = enc.encode(strSalt);
+
+    // turn the string into array buffer
+    const abKey = this.b642ab(strKey);
+
+    // import the key
+    let importKey: CryptoKey;
+    try {
+      importKey = await window.crypto.subtle.importKey('raw', abKey, 'PBKDF2', false, ['deriveBits', 'deriveKey']);
+    } catch (err) {
+      console.log(`Unable to import key because of error: ${err}`);
+    }
+    // derrive the key
+    let key: CryptoKey;
+    try {
+      key = await window.crypto.subtle.deriveKey(
+        {name: 'PBKDF2', hash: 'SHA-512', salt: saltBuffer, iterations: 1001},
+        importKey,
+        {name: 'AES-GCM', length: 256},
+        false,
+        ['encrypt', 'decrypt']
+      );
+    } catch (err) {
+      console.log(`Unable to derrive key because of error: ${err}`);
+    }
+
+    return key;
+  }
+
+  async encryptMessage(strKey: string, strSalt: string, userString: string): Promise<ArrayBuffer> {
     const enc = new TextEncoder();
     const encoded = enc.encode(`xxxxxxxxxxxx${userString}`);
 
     try {
-      const key = await window.crypto.subtle.importKey('raw', abKey, 'PBKDF2', false, ['encrypt', 'decrypt']);
-      console.log('successfully created key out of abKey');
+      const key = await this.strKey2CrytoKey(strKey, strSalt);
       // The iv must never be reused with a given key.
       const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
       const ciphertext = await window.crypto.subtle.encrypt( { name: 'AES-GCM', iv: randomIV }, key, encoded);
@@ -107,20 +151,27 @@ export class CryptoService {
       const buffer = new Uint8Array(ciphertext, 0, 5);
 
       return buffer;
-    } catch(err) {
+    } catch (err) {
       console.log(`error importing derrived key, because: ${err}`);
       return new Uint8Array(null, 0, 5);
     }
 
   } // encryptMessage
 
-  async decryptMessage(abKey: ArrayBuffer, encryptedAB: ArrayBuffer): Promise<string> {
-    const key = await crypto.subtle.importKey('raw', abKey, 'PBKDF2', false, ['encrypt', 'decrypt']);
+  async decryptMessage(strKey: string, strSalt: string,  encryptedString: string): Promise<string> {
+
+    const key = await this.strKey2CrytoKey(strKey, strSalt);
+
     const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
+    const encryptedAB = this.str2ab(encryptedString);
 
-    const decrypted = await window.crypto.subtle.decrypt( { name: 'AES-GCM', iv: randomIV }, key, encryptedAB);
+    let decrypted: ArrayBuffer;
+    try{
+    decrypted = await window.crypto.subtle.decrypt( { name: 'AES-GCM', iv: randomIV }, key, encryptedAB);
+    } catch (err) {
+      console.log(`unable to derive key because of error: ${err}`);
+    }
 
-    const dec = new TextDecoder();
-    return dec.decode(decrypted);
+    return this.ab2str(decrypted);
   } // decryptMessage
 }
