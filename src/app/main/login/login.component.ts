@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { SharedService } from '../services/shared/shared.service';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private sharedService: SharedService) { }
 
   ngOnInit(): void {
   }
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit {
 
     if (loginSuccess) {
       // redirect to listing
+      this.sharedService.toggleHeader(true);
       this.router.navigate(['listing']);
 
     } else {

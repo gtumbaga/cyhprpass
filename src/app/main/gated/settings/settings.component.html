@@ -1,6 +1,60 @@
-<p>settings works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-header">
+          Master Settings
+        </div>
+        <div class="card-body">
+          <!--<h5 class="card-title">Master Password and PIN</h5>-->
+          <!--<p class="card-text">-->
+            <!--Enter your master password here.-->
+          <!--</p>-->
+          <div class="mb-3">
+            <label for="userPW" class="form-label">Master String (Password)</label>
+            <input class="form-control form-control-lg" [(ngModel)]="userPW" type="text" id="userPW" name="userPW" autocomplete="off" />
+          </div>
+          <div class="mb-3">
+            <label for="userPIN" class="form-label">PIN</label>
+            <input class="form-control form-control-lg" [(ngModel)]="userPIN" type="text" id="userPIN" name="userPIN" pattern="[0-9]{4}" maxlength="4" autocomplete="off" />
+          </div>
 
-<div class="form-group">
-  <input class="form-control" [(ngModel)]="currentPW" type="text" id="password" />
-  <button class="btn btn-primary" (click)="btnClick()">Generate Key</button>
+        </div> <!-- /card-body -->
+        <div class="card-footer">
+          <button class="btn btn-primary" (click)="btnClick()">Set</button>
+        </div>
+      </div> <!-- /card -->
+
+
+
+
+
+
+
+    </div>
+    <div class="col-sm">
+      <div class="mb-5">
+        <h5>Master String</h5>
+        <p>
+          The Master String (password) is what will be used to encrypt your data.
+          This means that it can't change.
+          You also MUST remember it, otherwise you will not be able to decrypt your data correctly.
+        </p>
+      </div>
+      <div class="mb-5">
+        <h5>PIN</h5>
+        <p>
+          Your PIN will be used for you to be able to unlock the app, within the same session.
+        </p>
+      </div>
+      <div class="mb-5">
+        <p class="text-danger">
+          <small>
+            <strong>Remember: </strong> closing this tab/window will invalidate your session, and will require you to re-enter your Master String and PIN once again.
+          </small>
+        </p>
+      </div>
+    </div>
+  </div> <!-- /row -->
+
 </div>

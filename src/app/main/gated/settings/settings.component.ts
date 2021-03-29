@@ -1,82 +1,62 @@
-import { Component, OnInit } from '@angular/core';
-//import * as pbkdf2 from 'pbkdf2';
-//const pbkdf2 = require('pbkdf2');
+import { Component, OnInit, AfterContentChecked } from '@angular/core';
+import { CryptoService } from '../../services/crypto/crypto.service';
+import { SharedService } from '../../services/shared/shared.service';
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit {
-  currentPW: string;
+export class SettingsComponent implements OnInit, AfterContentChecked {
+  userPW: string;
+  userPIN: string;
 
-  constructor() {
+  constructor(private cryptoService: CryptoService, public sharedService: SharedService) {
     //
   }
 
   ngOnInit(): void {
   }
 
-  async btnClick() {
-    const theKeyBuff = await this.deriveKey(this.currentPW)
-    const theKey = this.ab2str(theKeyBuff);
-    const ciphertextValue = `${theKey}...[${theKeyBuff.byteLength} bytes total]`;
-    console.log(`the key: ${ciphertextValue}`);
-    console.log(String.fromCharCode.apply(null, new Uint8Array(theKeyBuff)));
-
-    // now for testing, we will turn it back into an array buffer, then back to a string again, to see if it stays the same...
-    const back2AB = this.str2ab(theKey);
-    const theKeyAgain = this.ab2str(back2AB);
-    const ciphertextValueAgain = `${theKeyAgain}...[${back2AB.byteLength} bytes total]`;
-    console.log(`the key: again ${ciphertextValueAgain}`);
-    console.log(String.fromCharCode.apply(null, new Uint8Array(back2AB)));
+  ngAfterContentChecked(): void {
+    this.sharedService.toggleHeader(true);
   }
 
-  ab2str(buf): string {
-    const asString =  String.fromCharCode.apply(null, new Uint8Array(buf));
-    //const buffer = new Uint8Array(buf, 0, 5).toString();
-    //return buffer;
+  async btnClick(): Promise<void> {
+    const theKeyBuff = await this.cryptoService.deriveKeyFromMasterString(this.userPW);
+    const theIV = this.cryptoService.generateRandomIV();
 
-    const arrStringCodes = Array();
-    for (let i = 0; i < asString.length; i++) {
-      const currentCode = asString.charCodeAt(i);
-      arrStringCodes[i] = currentCode;
-      //console.log(currentCode);
-    }
+    const theIVstr = this.cryptoService.ab2str(theIV);
 
-    return arrStringCodes.toString();
+    // now lets turn the CryptoKey object into a JWK so it can be saved...
+    const theKeyStr = await this.cryptoService.cryptoKey2JWK(theKeyBuff);
+    const theKeyB64Str = btoa(theKeyStr);
+    console.log(`str version of the random IV we generated here: ${theIVstr}`);
+    console.log(`str version of the key we generated here: ${theKeyB64Str}`);
+
+    // now lets take the json string, and try to turn it back in to a cyrptokey.
+    // this will prove that we can store the key in sessionstorage, and then grab it again
+    // as needed.
+    const theKeyBroughtBackStr = atob(theKeyB64Str);
+    const importedKey = await this.cryptoService.JWK2CryptoKey(theKeyBroughtBackStr);
+
+    // now lets try to use the string and encrypt something...
+    const stringToEncrypt = 'Gabe was here...';
+    const gotEncrypted = await this.cryptoService.encryptMessage(importedKey, theIV, `${this.userPW}${this.userPW}`, stringToEncrypt);
+    const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
+
+    // js object to hold the iv and cypher, then gets turned in to json string, then base64
+    const cipherPayload = btoa(JSON.stringify({
+      iv: theIVstr,
+      cipher: gotEncrypted2string
+    }));
+
+    console.log(`${stringToEncrypt} has been encrypted to this: ${cipherPayload}`);
+
+    const gotDecrypted = await this.cryptoService.decryptMessage(importedKey, `${this.userPW}${this.userPW}`, cipherPayload );
+
+    console.log(`${gotEncrypted2string} has been decrypted to this: ${gotDecrypted}`);
+
   }
-
-  str2ab(str: string) {
-    let strArray = Array();
-    strArray = str.split(',');
-    const data = Uint8Array.from(strArray);
-    return data.buffer;
-  }
-
-  async deriveKey(password) {
-    // const derivedKey = await pbkdf2.pbkdf2(password, 'salt', 1, 32, 'sha512');
-    const theSalt = 'something';
-    const theHash = 'SHA-512';
-    const keyLength = 64;
-    const iterationsCount = 1001;
-
-    const textEncoder = new TextEncoder();
-    const passwordBuffer = textEncoder.encode(password);
-    const importedKey = await crypto.subtle.importKey('raw', passwordBuffer, 'PBKDF2', false, ['deriveBits', 'deriveKey']);
-
-    const saltBuffer = textEncoder.encode(theSalt);
-    const params = {
-      name: 'PBKDF2',
-      hash: theHash,
-      salt: saltBuffer,
-      iterations: iterationsCount
-    };
-    const derivation = await crypto.subtle.deriveBits(params, importedKey, keyLength * 8);
-
-    return derivation;
-  }
-
-
 
 }

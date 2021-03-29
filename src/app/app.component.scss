@@ -1,0 +1,11 @@
+#header-holder {
+  display: none;
+
+  &.show {
+    display: block;
+  }
+}
+
+.bg-black {
+  background-color: #000;
+}
