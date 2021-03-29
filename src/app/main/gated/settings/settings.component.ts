@@ -26,9 +26,12 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
     const theKeyBuff = await this.cryptoService.deriveKeyFromMasterString(this.userPW);
     const theIV = this.cryptoService.generateRandomIV();
 
+    const theIVstr = this.cryptoService.ab2str(theIV);
+
     // now lets turn the CryptoKey object into a JWK so it can be saved...
     const theKeyStr = await this.cryptoService.cryptoKey2JWK(theKeyBuff);
     const theKeyB64Str = btoa(theKeyStr);
+    console.log(`str version of the random IV we generated here: ${theIVstr}`);
     console.log(`str version of the key we generated here: ${theKeyB64Str}`);
 
     // now lets take the json string, and try to turn it back in to a cyrptokey.
@@ -44,13 +47,13 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
 
     // js object to hold the iv and cypher, then gets turned in to json string, then base64
     const cipherPayload = btoa(JSON.stringify({
-      iv: theIV,
+      iv: theIVstr,
       cipher: gotEncrypted2string
     }));
 
     console.log(`${stringToEncrypt} has been encrypted to this: ${cipherPayload}`);
 
-    const gotDecrypted = await this.cryptoService.decryptMessage(theKeyBuff, theIV, 'sodiumsodium', cipherPayload );
+    const gotDecrypted = await this.cryptoService.decryptMessage(importedKey, 'sodiumsodium', cipherPayload );
 
     console.log(`${gotEncrypted2string} has been decrypted to this: ${gotDecrypted}`);
 

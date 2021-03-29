@@ -190,7 +190,7 @@ export class CryptoService {
   } // encryptMessage
 
 
-  async decryptMessage(keyCryptoKey: CryptoKey, theIV: ArrayBuffer, strSalt: string,  cipherPackage: string): Promise<string> {
+  async decryptMessage(keyCryptoKey: CryptoKey, strSalt: string,  cipherPackage: string): Promise<string> {
 
     //const key = await this.strKey2CrytoKey(strKey, strSalt);
     const key = keyCryptoKey;
@@ -207,6 +207,8 @@ export class CryptoService {
     console.log(`extracted cipher from cipherObj as: ${cipherObj.cipher}`);
 
     const encryptedAB = this.str2ab(cipherObj.cipher);
+
+    const theIV = this.str2ab(cipherObj.iv);
     //const theIV = cipherObj.iv;
     //const encryptedAB = encryptMessage;
 
