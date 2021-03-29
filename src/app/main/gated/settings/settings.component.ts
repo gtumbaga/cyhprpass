@@ -24,18 +24,22 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
 
   async btnClick(): Promise<void> {
     const theKeyBuff = await this.cryptoService.deriveKeyFromMasterString(this.userPW);
-    const theKey = this.cryptoService.ab2b64(theKeyBuff);
-    const ciphertextValue = `${theKey}...[${theKeyBuff.byteLength} bytes total]`;
-    console.log(`the key: ${ciphertextValue}`);
+    const theIV = this.cryptoService.generateRandomIV();
+
+    //const theKey = this.cryptoService.ab2b64(theKeyBuff);
+    //const ciphertextValue = `${theKey}...[${theKeyBuff.byteLength} bytes total]`;
+    //console.log(`the key: ${ciphertextValue}`);
 
 
     // now lets try to use the string and encrypt something...
     const stringToEncrypt = 'Gabe was here...';
-    const gotEncrypted = await this.cryptoService.encryptMessage(theKey, 'sodiumsodium', stringToEncrypt);
+    const gotEncrypted = await this.cryptoService.encryptMessage(theKeyBuff, theIV, 'sodiumsodium', stringToEncrypt);
     const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
     console.log(`${stringToEncrypt} has been encrypted to this: ${gotEncrypted2string}`);
 
-    const gotDecrypted = await this.cryptoService.decryptMessage(theKey, 'sodiumsodium', gotEncrypted2string );
+    const gotDecrypted = await this.cryptoService.decryptMessage(theKeyBuff, theIV, 'sodiumsodium', gotEncrypted );
+
+    //const decryptedBackToStr = atob(gotDecrypted);
 
     console.log(`${gotEncrypted2string} has been decrypted to this: ${gotDecrypted}`);
 

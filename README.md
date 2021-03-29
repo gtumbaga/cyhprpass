@@ -12,7 +12,11 @@ The npm module wasn't working, but thats ok, because there is built-in crypto in
  - https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/deriveKey
  - https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
 
+### Other sources
 
+When I couldn't figure out why decrypt was complaining that too little data, turns out
+I was missing the auth part of GCM.
+https://stackoverflow.com/questions/66155504/webcrypto-api-domexception-the-provided-data-is-too-small
 ---
 
 ## Angular CLI stuff

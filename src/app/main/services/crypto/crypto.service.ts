@@ -89,7 +89,7 @@ export class CryptoService {
       theHash: string = 'SHA-512',
       keyLength: number = 32,
       iterationsCount: number = 1001
-    ): Promise<ArrayBuffer>
+    ): Promise<CryptoKey>
   {
     const textEncoder = new TextEncoder();
     const passwordBuffer = textEncoder.encode(password);
@@ -102,7 +102,21 @@ export class CryptoService {
       salt: saltBuffer,
       iterations: iterationsCount
     };
-    const derivation = await crypto.subtle.deriveBits(params, importedKey, keyLength * 8);
+    //const derivation = await crypto.subtle.deriveBits(params, importedKey, keyLength * 8);
+
+    let derivation: CryptoKey;
+    try {
+      derivation = await window.crypto.subtle.deriveKey(
+        {name: 'PBKDF2', hash: 'SHA-512', salt: saltBuffer, iterations: 1001},
+        importedKey,
+        {name: 'AES-GCM', length: 256},
+        false,
+        ['encrypt', 'decrypt']
+      );
+    } catch (err) {
+      console.log(`Unable to derrive key because of error: ${err}`);
+
+    }
 
     return derivation;
   }
@@ -138,19 +152,26 @@ export class CryptoService {
     return key;
   }
 
-  async encryptMessage(strKey: string, strSalt: string, userString: string): Promise<ArrayBuffer> {
+  generateRandomIV(): ArrayBuffer {
+    return window.crypto.getRandomValues(new Uint8Array(16));
+  }
+
+  async encryptMessage(keyCryptoKey: CryptoKey, theIV: ArrayBuffer, strSalt: string, userString: string): Promise<ArrayBuffer> {
     const enc = new TextEncoder();
-    const encoded = enc.encode(`xxxxxxxxxxxx${userString}`);
+    const encoded = enc.encode(userString);
 
     try {
-      const key = await this.strKey2CrytoKey(strKey, strSalt);
+      //const key = await this.strKey2CrytoKey(strKey, strSalt);
+      const key = keyCryptoKey;
       // The iv must never be reused with a given key.
-      const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
-      const ciphertext = await window.crypto.subtle.encrypt( { name: 'AES-GCM', iv: randomIV }, key, encoded);
+      //const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
 
-      const buffer = new Uint8Array(ciphertext, 0, 5);
+      const ciphertext = await window.crypto.subtle.encrypt( { name: 'AES-GCM', iv: theIV }, key, encoded);
+      //const tag = ciphertext.getAuthTag();
 
-      return buffer;
+      //const buffer = new Uint8Array(ciphertext, 0, 5);
+
+      return ciphertext;
     } catch (err) {
       console.log(`error importing derrived key, because: ${err}`);
       return new Uint8Array(null, 0, 5);
@@ -158,20 +179,27 @@ export class CryptoService {
 
   } // encryptMessage
 
-  async decryptMessage(strKey: string, strSalt: string,  encryptedString: string): Promise<string> {
 
-    const key = await this.strKey2CrytoKey(strKey, strSalt);
+  async decryptMessage(keyCryptoKey: CryptoKey, theIV: ArrayBuffer, strSalt: string,  encryptMessage: ArrayBuffer): Promise<string> {
+
+    //const key = await this.strKey2CrytoKey(strKey, strSalt);
+    const key = keyCryptoKey;
 
     const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
-    const encryptedAB = this.str2ab(encryptedString);
+    //const encryptedAB = this.str2ab(encryptedString);
+    const encryptedAB = encryptMessage;
 
     let decrypted: ArrayBuffer;
     try{
-    decrypted = await window.crypto.subtle.decrypt( { name: 'AES-GCM', iv: randomIV }, key, encryptedAB);
+    decrypted = await window.crypto.subtle.decrypt( { name: 'AES-GCM', iv: theIV }, key, encryptedAB);
     } catch (err) {
-      console.log(`unable to derive key because of error: ${err}`);
+      console.log(`unable to decrypt message because of error: ${err}`);
     }
 
-    return this.ab2str(decrypted);
+    //return this.ab2str(decrypted);
+
+    const decoder = new TextDecoder();
+    const plaintext = decoder.decode(decrypted);
+    return plaintext;
   } // decryptMessage
 }
