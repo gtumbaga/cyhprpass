@@ -42,7 +42,7 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
 
     // now lets try to use the string and encrypt something...
     const stringToEncrypt = 'Gabe was here...';
-    const gotEncrypted = await this.cryptoService.encryptMessage(importedKey, theIV, 'sodiumsodium', stringToEncrypt);
+    const gotEncrypted = await this.cryptoService.encryptMessage(importedKey, theIV, `${this.userPW}${this.userPW}`, stringToEncrypt);
     const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
 
     // js object to hold the iv and cypher, then gets turned in to json string, then base64
@@ -53,7 +53,7 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
 
     console.log(`${stringToEncrypt} has been encrypted to this: ${cipherPayload}`);
 
-    const gotDecrypted = await this.cryptoService.decryptMessage(importedKey, 'sodiumsodium', cipherPayload );
+    const gotDecrypted = await this.cryptoService.decryptMessage(importedKey, `${this.userPW}${this.userPW}`, cipherPayload );
 
     console.log(`${gotEncrypted2string} has been decrypted to this: ${gotDecrypted}`);
 
