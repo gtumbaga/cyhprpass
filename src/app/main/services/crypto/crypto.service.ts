@@ -190,14 +190,24 @@ export class CryptoService {
   } // encryptMessage
 
 
-  async decryptMessage(keyCryptoKey: CryptoKey, theIV: ArrayBuffer, strSalt: string,  encryptedString: string): Promise<string> {
+  async decryptMessage(keyCryptoKey: CryptoKey, theIV: ArrayBuffer, strSalt: string,  cipherPackage: string): Promise<string> {
 
     //const key = await this.strKey2CrytoKey(strKey, strSalt);
     const key = keyCryptoKey;
 
     //const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
     //const encryptedAB = this.str2ab(encryptedString);
-    const encryptedAB = this.b642ab(encryptedString);
+
+
+
+    // string gets converted from base64 to JSON string, then parase the JSON string
+    // back to object, then remove the iv and b64 encrypted message from it...
+    const cipherObj = JSON.parse(atob(cipherPackage));
+
+    console.log(`extracted cipher from cipherObj as: ${cipherObj.cipher}`);
+
+    const encryptedAB = this.str2ab(cipherObj.cipher);
+    //const theIV = cipherObj.iv;
     //const encryptedAB = encryptMessage;
 
     let decrypted: ArrayBuffer;
