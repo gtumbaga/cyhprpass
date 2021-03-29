@@ -28,17 +28,19 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
 
     // now lets turn the CryptoKey object into a JWK so it can be saved...
     const theKeyStr = await this.cryptoService.cryptoKey2JWK(theKeyBuff);
-    console.log(`str version of the key we generated here: ${theKeyStr}`);
+    const theKeyB64Str = btoa(theKeyStr);
+    console.log(`str version of the key we generated here: ${theKeyB64Str}`);
 
     // now lets take the json string, and try to turn it back in to a cyrptokey.
     // this will prove that we can store the key in sessionstorage, and then grab it again
     // as needed.
-    const importedKey = await this.cryptoService.JWK2CryptoKey(theKeyStr);
+    const theKeyBroughtBackStr = atob(theKeyB64Str);
+    const importedKey = await this.cryptoService.JWK2CryptoKey(theKeyBroughtBackStr);
 
     // now lets try to use the string and encrypt something...
     const stringToEncrypt = 'Gabe was here...';
     const gotEncrypted = await this.cryptoService.encryptMessage(importedKey, theIV, 'sodiumsodium', stringToEncrypt);
-    const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
+    const gotEncrypted2string = this.cryptoService.ab2b64(gotEncrypted);
     console.log(`${stringToEncrypt} has been encrypted to this: ${gotEncrypted2string}`);
 
     const gotDecrypted = await this.cryptoService.decryptMessage(theKeyBuff, theIV, 'sodiumsodium', gotEncrypted2string );

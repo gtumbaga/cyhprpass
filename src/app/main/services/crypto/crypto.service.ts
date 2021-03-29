@@ -196,7 +196,8 @@ export class CryptoService {
     const key = keyCryptoKey;
 
     //const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
-    const encryptedAB = this.str2ab(encryptedString);
+    //const encryptedAB = this.str2ab(encryptedString);
+    const encryptedAB = this.b642ab(encryptedString);
     //const encryptedAB = encryptMessage;
 
     let decrypted: ArrayBuffer;
