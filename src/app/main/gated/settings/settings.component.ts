@@ -37,7 +37,7 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
     const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
     console.log(`${stringToEncrypt} has been encrypted to this: ${gotEncrypted2string}`);
 
-    const gotDecrypted = await this.cryptoService.decryptMessage(theKeyBuff, theIV, 'sodiumsodium', gotEncrypted );
+    const gotDecrypted = await this.cryptoService.decryptMessage(theKeyBuff, theIV, 'sodiumsodium', gotEncrypted2string );
 
     //const decryptedBackToStr = atob(gotDecrypted);
 

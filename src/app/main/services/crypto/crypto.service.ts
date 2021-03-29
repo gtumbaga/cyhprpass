@@ -180,14 +180,14 @@ export class CryptoService {
   } // encryptMessage
 
 
-  async decryptMessage(keyCryptoKey: CryptoKey, theIV: ArrayBuffer, strSalt: string,  encryptMessage: ArrayBuffer): Promise<string> {
+  async decryptMessage(keyCryptoKey: CryptoKey, theIV: ArrayBuffer, strSalt: string,  encryptedString: string): Promise<string> {
 
     //const key = await this.strKey2CrytoKey(strKey, strSalt);
     const key = keyCryptoKey;
 
-    const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
-    //const encryptedAB = this.str2ab(encryptedString);
-    const encryptedAB = encryptMessage;
+    //const randomIV = window.crypto.getRandomValues(new Uint8Array(12));
+    const encryptedAB = this.str2ab(encryptedString);
+    //const encryptedAB = encryptMessage;
 
     let decrypted: ArrayBuffer;
     try{
