@@ -26,35 +26,25 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
     const theKeyBuff = await this.cryptoService.deriveKeyFromMasterString(this.userPW);
     const theIV = this.cryptoService.generateRandomIV();
 
-    //const theKey = this.cryptoService.ab2b64(theKeyBuff);
-    //const ciphertextValue = `${theKey}...[${theKeyBuff.byteLength} bytes total]`;
-    //console.log(`the key: ${ciphertextValue}`);
+    // now lets turn the CryptoKey object into a JWK so it can be saved...
+    const theKeyStr = await this.cryptoService.cryptoKey2JWK(theKeyBuff);
+    console.log(`str version of the key we generated here: ${theKeyStr}`);
 
+    // now lets take the json string, and try to turn it back in to a cyrptokey.
+    // this will prove that we can store the key in sessionstorage, and then grab it again
+    // as needed.
+    const importedKey = await this.cryptoService.JWK2CryptoKey(theKeyStr);
 
     // now lets try to use the string and encrypt something...
     const stringToEncrypt = 'Gabe was here...';
-    const gotEncrypted = await this.cryptoService.encryptMessage(theKeyBuff, theIV, 'sodiumsodium', stringToEncrypt);
+    const gotEncrypted = await this.cryptoService.encryptMessage(importedKey, theIV, 'sodiumsodium', stringToEncrypt);
     const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
     console.log(`${stringToEncrypt} has been encrypted to this: ${gotEncrypted2string}`);
 
     const gotDecrypted = await this.cryptoService.decryptMessage(theKeyBuff, theIV, 'sodiumsodium', gotEncrypted2string );
 
-    //const decryptedBackToStr = atob(gotDecrypted);
-
     console.log(`${gotEncrypted2string} has been decrypted to this: ${gotDecrypted}`);
 
-
-
-
-
-
-
-    // now for testing, we will turn it back into an array buffer, then back to a string again, to see if it stays the same...
-    //const back2AB = this.cryptoService.str2ab(theKey);
-    //const theKeyAgain = this.cryptoService.ab2str(back2AB);
-    //const ciphertextValueAgain = `${theKeyAgain}...[${back2AB.byteLength} bytes total]`;
-    //console.log(`the key: again ${ciphertextValueAgain}`);
-    //console.log(String.fromCharCode.apply(null, new Uint8Array(back2AB)));
   }
 
 }

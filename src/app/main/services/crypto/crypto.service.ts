@@ -110,7 +110,7 @@ export class CryptoService {
         {name: 'PBKDF2', hash: 'SHA-512', salt: saltBuffer, iterations: 1001},
         importedKey,
         {name: 'AES-GCM', length: 256},
-        false,
+        true,
         ['encrypt', 'decrypt']
       );
     } catch (err) {
@@ -119,6 +119,16 @@ export class CryptoService {
     }
 
     return derivation;
+  }
+
+  async cryptoKey2JWK(theCKey: CryptoKey): Promise<string> {
+    return JSON.stringify(await crypto.subtle.exportKey('jwk', theCKey));
+  }
+
+  async JWK2CryptoKey(theJSONstr: string): Promise<CryptoKey> {
+    const theJSON = JSON.parse(theJSONstr);
+    const importedKey = await crypto.subtle.importKey('jwk', theJSON, {name: 'AES-GCM', length: 256}, false, ['encrypt', 'decrypt']);
+    return importedKey;
   }
 
   async strKey2CrytoKey(strKey: string, strSalt: string): Promise<CryptoKey> {
