@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedService } from '../services/shared/shared.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +10,7 @@ import { SharedService } from '../services/shared/shared.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router, private sharedService: SharedService) { }
+  constructor(private router: Router, private sharedService: SharedService, private authService: AuthService) { }
 
   ngOnInit(): void {
   }
@@ -26,6 +27,10 @@ export class LoginComponent implements OnInit {
     } else {
       // show bad password message
     }
+  }
+
+  loginWithGoogle(): void {
+    this.authService.loginWithGoogle();
   }
 
 }
