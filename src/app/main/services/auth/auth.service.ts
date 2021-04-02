@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from "@angular/fire/firestore";
+import { AngularFirestore } from '@angular/fire/firestore';
 import { User } from 'firebase';
 // @firebase/app
 
@@ -57,6 +57,14 @@ export class AuthService {
     return  user  !==  null;
   } // isLoggedIn
 
+  checkMasterStringExists(): boolean {
+    if (localStorage.getItem('master-string-encoded') === null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   async loginWithGoogle(): Promise<boolean>{
     try {
       const loginResults = await this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
@@ -65,6 +73,7 @@ export class AuthService {
 
       if (await this.checkIfUserDocumentExists(loginResults.user.uid) === false) {
         await this.createInitialUserDocument(loginResults.user.uid, loginResults.user.email);
+        //this.router.navigate(['listing/settings']);
       }
 
       return true;

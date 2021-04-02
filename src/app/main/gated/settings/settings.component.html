@@ -3,7 +3,22 @@
     <div class="col-sm-8">
       <div class="card">
         <div class="card-header">
-          Master Settings
+          Master String (Key)
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label for="userPW" class="form-label">This will be used to derive a master key for all your encryption.</label>
+            <input class="form-control form-control-lg" [(ngModel)]="userPW" type="text" id="userPW" name="userPW" autocomplete="off" />
+          </div>
+        </div> <!-- /card-body -->
+        <div class="card-footer">
+          <button class="btn btn-primary" (click)="saveMasterString()">Save Master String</button>
+        </div>
+      </div> <!-- /card -->
+
+      <div class="card">
+        <div class="card-header">
+          PIN
         </div>
         <div class="card-body">
           <!--<h5 class="card-title">Master Password and PIN</h5>-->
@@ -11,17 +26,13 @@
             <!--Enter your master password here.-->
           <!--</p>-->
           <div class="mb-3">
-            <label for="userPW" class="form-label">Master String (Password)</label>
-            <input class="form-control form-control-lg" [(ngModel)]="userPW" type="text" id="userPW" name="userPW" autocomplete="off" />
-          </div>
-          <div class="mb-3">
-            <label for="userPIN" class="form-label">PIN</label>
+            <label for="userPIN" class="form-label">This will be used to unlock your screen.</label>
             <input class="form-control form-control-lg" [(ngModel)]="userPIN" type="text" id="userPIN" name="userPIN" pattern="[0-9]{4}" maxlength="4" autocomplete="off" />
           </div>
 
         </div> <!-- /card-body -->
         <div class="card-footer">
-          <button class="btn btn-primary" (click)="btnClick()">Set</button>
+          <button class="btn btn-primary" (click)="btnClick()">Save PIN</button>
         </div>
       </div> <!-- /card -->
 
@@ -36,7 +47,7 @@
       <div class="mb-5">
         <h5>Master String</h5>
         <p>
-          The Master String (password) is what will be used to encrypt your data.
+          The Master String (key) is what will be used to encrypt your data.
           This means that it can't change.
           You also MUST remember it, otherwise you will not be able to decrypt your data correctly.
         </p>
