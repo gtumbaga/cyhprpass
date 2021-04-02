@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFirestore } from "@angular/fire/firestore";
 import { User } from 'firebase';
 // @firebase/app
 
@@ -12,7 +13,7 @@ import { User } from 'firebase';
 export class AuthService {
   user: User;
 
-  constructor(public afAuth: AngularFireAuth, public  router: Router) {
+  constructor(public afAuth: AngularFireAuth, public afs: AngularFirestore, public  router: Router) {
     this.afAuth.authState.subscribe(user => {
       if (user){
         this.user = user;
@@ -23,33 +24,55 @@ export class AuthService {
     }); // afAuth.authState.subscribe
   } // constructor
 
-  //async login(email: string, password: string) {
-    //const result = await this.afAuth.signInWithEmailAndPassword(email, password);
-    //this.router.navigate(['admin/list']);
-  //} // login
+  async checkIfUserDocumentExists(uid: string): Promise<boolean> {
 
-  //async register(email: string, password: string) {
-    //const result = await this.afAuth.createUserWithEmailAndPassword(email, password);
-    //this.sendEmailVerification();
-  //} // register
+    const userDocExists = await this.afs.collection('users').doc(uid).ref.get()
+    .then((docSnapshot) => {
+      if (docSnapshot.exists) {
+        return true;
+      } else {
+        return false;
+      }
+    }).catch(err => {
+      console.log(`error: ${err}`);
+      return false;
+    });
 
-  //async sendEmailVerification() {
-    //await this.afAuth.currentUser.sendEmailVerification();
-    //this.router.navigate(['admin/verify-email']);
-  //} // sendEmailVerification
+    // console.log(`userDocExists: ${userDocExists}`);
 
-  //async sendPasswordResetEmail(passwordResetEmail: string) {
-    //return await this.afAuth.sendPasswordResetEmail(passwordResetEmail);
-  //} // sendPasswordResetEmail
+    return userDocExists;
+  } // checkIfUserDocumentExists
+
+  async createInitialUserDocument(uid: string, userEmail: string): Promise<void> {
+    const result = await this.afs.collection('users').doc(uid).set({
+      email: userEmail,
+      entryTitles: {}
+    });
+
+    return result;
+  } // createInitialUserDocument
 
   get isLoggedIn(): boolean {
     const  user  =  JSON.parse(localStorage.getItem('user'));
     return  user  !==  null;
   } // isLoggedIn
 
-  async loginWithGoogle(): Promise<void>{
-    await this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
-    this.router.navigate(['listing']);
+  async loginWithGoogle(): Promise<boolean>{
+    try {
+      const loginResults = await this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider());
+
+      console.log(loginResults.user.uid);
+
+      if (await this.checkIfUserDocumentExists(loginResults.user.uid) === false) {
+        await this.createInitialUserDocument(loginResults.user.uid, loginResults.user.email);
+      }
+
+      return true;
+
+    } catch (err) {
+      console.log(`Unable to log in with google account, due this this error: ${err}`);
+      return false;
+    }
   }
 
 

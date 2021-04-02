@@ -10,6 +10,8 @@ import { LoginComponent } from './main/login/login.component';
 // Firebase Auth
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFirestoreModule } from "@angular/fire/firestore";
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { firebaseConfig } from '../_secrets/firebaseConfig';
 
 @NgModule({
@@ -22,7 +24,10 @@ import { firebaseConfig } from '../_secrets/firebaseConfig';
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFireDatabaseModule,
+    AngularFirestoreModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]

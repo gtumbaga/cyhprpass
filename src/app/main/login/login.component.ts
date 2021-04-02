@@ -29,8 +29,17 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  loginWithGoogle(): void {
-    this.authService.loginWithGoogle();
+  async loginWithGoogle(): Promise<void> {
+    const loginSuccess = await this.authService.loginWithGoogle();
+
+    if (loginSuccess) {
+      // redirect to listing
+      this.sharedService.toggleHeader(true);
+      this.router.navigate(['listing']);
+
+    } else {
+      // show bad password message
+    }
   }
 
 }
