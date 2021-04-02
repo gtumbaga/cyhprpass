@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { SharedService } from '../../services/shared/shared.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-listing',

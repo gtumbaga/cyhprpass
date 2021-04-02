@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterContentChecked } from '@angular/core';
 import { CryptoService } from '../../services/crypto/crypto.service';
 import { SharedService } from '../../services/shared/shared.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-settings',
@@ -11,7 +12,7 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
   userPW: string;
   userPIN: string;
 
-  constructor(private cryptoService: CryptoService, public sharedService: SharedService) {
+  constructor(private cryptoService: CryptoService, public sharedService: SharedService, public router: Router) {
     //
   }
 
@@ -20,6 +21,19 @@ export class SettingsComponent implements OnInit, AfterContentChecked {
 
   ngAfterContentChecked(): void {
     this.sharedService.toggleHeader(true);
+  }
+
+  async saveMasterString(): Promise<void> {
+    const theKeyBuff = await this.cryptoService.deriveKeyFromMasterString(this.userPW);
+    const theKeyStr = await this.cryptoService.cryptoKey2JWK(theKeyBuff);
+    const theKeyB64Str = btoa(theKeyStr);
+
+
+    localStorage.setItem('master-string-encoded', theKeyB64Str);
+    await this.sharedService.setMasterKey(theKeyBuff);
+
+    // now lets redir to listing page
+    this.router.navigate(['listing']);
   }
 
   async btnClick(): Promise<void> {
