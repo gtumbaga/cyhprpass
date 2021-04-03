@@ -1,0 +1,27 @@
+.toggler-group {
+  position: relative;
+
+  label.holder {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  .toggler {
+    display: none;
+  }
+}
+.input-holder input {
+  padding-right: 80px !important;
+}
+input[type=checkbox].toggler {
+  &:checked ~ .input-holder input {
+    display: block !important;
+  }
+  &:checked ~ .input-holder input.pw {
+    display: none !important;
+  }
+  
+}

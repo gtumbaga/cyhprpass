@@ -16,17 +16,27 @@ export class AddnewComponent implements OnInit {
     this.formFields = Array(
       {
         label: 'Title',
-        data: 'asdf',
+        data: '',
+        privateText: false
+      },
+      {
+        label: 'Username',
+        data: '',
         privateText: false
       },
       {
         label: 'Password',
-        data: 'asdf',
-        private: true
+        data: '',
+        privateText: true
+      },
+      {
+        label: 'TOTP',
+        data: '',
+        privateText: true
       },
       {
         label: 'URL',
-        data: 'asdf',
+        data: '',
         privateText: false
       }
     );
@@ -43,6 +53,10 @@ export class AddnewComponent implements OnInit {
         privateText: false
       }
     );
+  }
+
+  public saveEntry(): void {
+    //do stuff
   }
 
 }

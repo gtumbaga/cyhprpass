@@ -10,13 +10,27 @@
       <input class="form-control" type="text" [(ngModel)]="formField.label" placeholder="Field Title">
     </div>
     <div class="col-sm-8">
-      <input class="form-control" type="text" [(ngModel)]="formField.data" placeholder="Field Data">
+      <div class="toggler-group">
+        <input type="checkbox" name="toggler" id="toggler{{i}}"  class="toggler" >
+        <label for="toggler{{i}}" class="holder btn btn-primary" [hidden]="formField.privateText==false">View</label>
+        <div class="input-holder">
+          <input class="form-control viewable" type="text" [hidden]="formField.privateText==true" [(ngModel)]="formField.data" placeholder="Field Data">
+          <input class="form-control pw" type="password" [hidden]="formField.privateText==false" [(ngModel)]="formField.data" placeholder="Field Data">
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="row">
     <div class="col">
       <button class="btn btn-primary" (click)="addNewRow()">Add Extra Field</button>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col">
+      <hr />
+      <button class="btn btn-success float-end btn-lg" (click)="saveEntry()">Save</button>
     </div>
   </div>
 
