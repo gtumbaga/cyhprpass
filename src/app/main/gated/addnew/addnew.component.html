@@ -1,1 +1,24 @@
-<p>addnew works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Add New Login</h1>
+    </div>
+  </div>
+
+  <div class="row mb-2" *ngFor="let formField of formFields; let i = index">
+    <div class="col-sm-4">
+      <input class="form-control" type="text" [(ngModel)]="formField.label" placeholder="Field Title">
+    </div>
+    <div class="col-sm-8">
+      <input class="form-control" type="text" [(ngModel)]="formField.data" placeholder="Field Data">
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-primary" (click)="addNewRow()">Add Extra Field</button>
+    </div>
+  </div>
+
+</div>
+

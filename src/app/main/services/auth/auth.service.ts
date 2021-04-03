@@ -73,7 +73,6 @@ export class AuthService {
 
       if (await this.checkIfUserDocumentExists(loginResults.user.uid) === false) {
         await this.createInitialUserDocument(loginResults.user.uid, loginResults.user.email);
-        //this.router.navigate(['listing/settings']);
       }
 
       return true;
@@ -82,6 +81,14 @@ export class AuthService {
       console.log(`Unable to log in with google account, due this this error: ${err}`);
       return false;
     }
+  }
+
+  async saveEntry(title: string, fields: Array<string>): Promise<any> {
+    // save to entries table
+
+    // take id, save it to titles array
+
+    // save titles array to user's document
   }
 
 
