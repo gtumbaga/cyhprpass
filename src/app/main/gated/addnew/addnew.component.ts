@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SharedService } from '../../services/shared/shared.service';
 import { AuthService } from '../../services/auth/auth.service';
 
@@ -11,11 +12,16 @@ import { AuthService } from '../../services/auth/auth.service';
 export class AddnewComponent implements OnInit {
   public formFields: Array<any>;
 
-  constructor() {
+  constructor(private authService: AuthService) {
 
     this.formFields = Array(
       {
         label: 'Title',
+        data: '',
+        privateText: false
+      },
+      {
+        label: 'URL',
         data: '',
         privateText: false
       },
@@ -33,11 +39,6 @@ export class AddnewComponent implements OnInit {
         label: 'TOTP',
         data: '',
         privateText: true
-      },
-      {
-        label: 'URL',
-        data: '',
-        privateText: false
       }
     );
   }
@@ -56,7 +57,7 @@ export class AddnewComponent implements OnInit {
   }
 
   public saveEntry(): void {
-    //do stuff
+    this.authService.saveEntry(this.formFields);
   }
 
 }

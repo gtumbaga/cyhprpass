@@ -4,6 +4,7 @@ import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { User } from 'firebase';
+import { CryptoService } from '../crypto/crypto.service';
 // @firebase/app
 
 
@@ -13,7 +14,7 @@ import { User } from 'firebase';
 export class AuthService {
   user: User;
 
-  constructor(public afAuth: AngularFireAuth, public afs: AngularFirestore, public  router: Router) {
+  constructor(public afAuth: AngularFireAuth, public afs: AngularFirestore, public  router: Router, private cryptoService: CryptoService) {
     this.afAuth.authState.subscribe(user => {
       if (user){
         this.user = user;
@@ -83,13 +84,64 @@ export class AuthService {
     }
   }
 
-  async saveEntry(title: string, fields: Array<string>): Promise<any> {
-    // save to entries table
+  async saveEntry(fields: Array<any>): Promise<any> {
 
-    // take id, save it to titles array
+    const payload: Array<any> = new Array();
 
-    // save titles array to user's document
-  }
+    const  user  =  JSON.parse(localStorage.getItem('user'));
 
+
+    // get title out of fields aray so we can save it to User doc
+    const title = fields[0].data;
+
+    const theKeyB64Str = localStorage.getItem('master-string-encoded');
+    const importedKey = await this.cryptoService.JWK2CryptoKey(atob(theKeyB64Str));
+
+    // iterate through each entry, and encrypt the ones that need to be.
+    fields.forEach(async (entry) => {
+      const myLabel = entry.label;
+      const isPrivate = entry.privateText;
+
+      let newData: string;
+
+      if (isPrivate === true) {
+        const theIV = this.cryptoService.generateRandomIV();
+
+        const stringToEncrypt = entry.data;
+
+        const gotEncrypted = await this.cryptoService.encryptMessage(importedKey, theIV, `${theKeyB64Str}${theKeyB64Str}`, stringToEncrypt);
+        const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
+
+        const cipherPayload = btoa(JSON.stringify({
+          iv: this.cryptoService.ab2str(theIV),
+          cipher: gotEncrypted2string
+        }));
+
+        newData = cipherPayload;
+      } else {
+        newData = entry.data;
+      }
+
+      payload.push(
+        {
+          label: myLabel,
+          data: newData,
+          privateText: isPrivate
+        }
+      );
+
+
+    }); // foreach
+
+    const newId = this.afs.createId();
+    const saveResult = await this.afs.collection('entries').doc(newId).set({
+      email: user.email,
+      payload
+    });
+
+    console.log('saveResult');
+    console.log(saveResult);
+
+  } // saveEntry
 
 } // AuthService

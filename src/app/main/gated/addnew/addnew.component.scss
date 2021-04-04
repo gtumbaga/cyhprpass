@@ -8,6 +8,15 @@
     right: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    background-color: #ccc;
+
+    &:hover {
+      background-color: #0b5ed7;
+    }
+
+    i {
+      color: #000;
+    }
   }
   .toggler {
     display: none;
@@ -17,6 +26,13 @@
   padding-right: 80px !important;
 }
 input[type=checkbox].toggler {
+  &:checked ~ label.holder {
+    background-color: #0d6efd;
+
+    i {
+      color: #fff;
+    }
+  }
   &:checked ~ .input-holder input {
     display: block !important;
   }

@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class SharedService {
   public importedKey: CryptoKey;
+  public titlesList: Array<any>;
 
   constructor() {
   }
@@ -13,6 +14,7 @@ export class SharedService {
     this.importedKey = importedKey;
 
   }
+
   public toggleHeader(choice: boolean): void {
     if (choice === true) {
       document.getElementById('header-holder').classList.add('show');
