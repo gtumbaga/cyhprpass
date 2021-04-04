@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { SharedService } from '../../services/shared/shared.service';
+import { AuthService } from '../../services/auth/auth.service';
+
 
 @Component({
   selector: 'app-addnew',
@@ -6,10 +10,54 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./addnew.component.scss']
 })
 export class AddnewComponent implements OnInit {
+  public formFields: Array<any>;
 
-  constructor() { }
+  constructor(private authService: AuthService) {
+
+    this.formFields = Array(
+      {
+        label: 'Title',
+        data: '',
+        privateText: false
+      },
+      {
+        label: 'URL',
+        data: '',
+        privateText: false
+      },
+      {
+        label: 'Username',
+        data: '',
+        privateText: false
+      },
+      {
+        label: 'Password',
+        data: '',
+        privateText: true
+      },
+      {
+        label: 'TOTP',
+        data: '',
+        privateText: true
+      }
+    );
+  }
 
   ngOnInit(): void {
+  }
+
+  public addNewRow(): void {
+    this.formFields.push(
+      {
+        label: '',
+        data: '',
+        privateText: false
+      }
+    );
+  }
+
+  public saveEntry(): void {
+    this.authService.saveEntry(this.formFields);
   }
 
 }
