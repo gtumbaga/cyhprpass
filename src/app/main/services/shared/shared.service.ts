@@ -12,7 +12,6 @@ export class SharedService {
 
   public async setMasterKey(importedKey: CryptoKey): Promise<void> {
     this.importedKey = importedKey;
-
   }
 
   public toggleHeader(choice: boolean): void {

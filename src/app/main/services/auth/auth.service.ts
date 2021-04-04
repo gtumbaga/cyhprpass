@@ -98,11 +98,9 @@ export class AuthService {
     const importedKey = await this.cryptoService.JWK2CryptoKey(atob(theKeyB64Str));
 
     // iterate through each entry, and encrypt the ones that need to be.
-    fields.forEach(async (entry) => {
+    let promiseArr = fields.map(async (entry) => {
       const myLabel = entry.label;
       const isPrivate = entry.privateText;
-
-      let newData: string;
 
       if (isPrivate === true) {
         const theIV = this.cryptoService.generateRandomIV();
@@ -117,30 +115,43 @@ export class AuthService {
           cipher: gotEncrypted2string
         }));
 
-        newData = cipherPayload;
+        console.log(cipherPayload);
+        payload.push(
+          {
+            label: myLabel,
+            data: cipherPayload,
+            privateText: isPrivate
+          }
+        );
       } else {
-        newData = entry.data;
+        payload.push(
+          {
+            label: myLabel,
+            data: entry.data,
+            privateText: isPrivate
+          }
+        );
       }
 
-      payload.push(
-        {
-          label: myLabel,
-          data: newData,
-          privateText: isPrivate
-        }
-      );
+    }); // map
 
+    Promise.all(promiseArr).then(async (resultsArray) => {
+      const newId = this.afs.createId();
+      console.log('payload:');
+      console.log(payload);
+      const saveResult = await this.afs.collection('entries').doc(newId).set({
+        email: user.email,
+        payload
+      });
 
-    }); // foreach
+      //console.log('saveResult');
+      //console.log(saveResult);
+    }).catch((err) => {
+      // do something when any of the promises in array are rejected
+      console.log(`An error occured looping over private text: ${err}`);
 
-    const newId = this.afs.createId();
-    const saveResult = await this.afs.collection('entries').doc(newId).set({
-      email: user.email,
-      payload
     });
 
-    console.log('saveResult');
-    console.log(saveResult);
 
   } // saveEntry
 
