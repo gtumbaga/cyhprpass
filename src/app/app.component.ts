@@ -17,6 +17,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // this will ensure that on browser refresh / page reloads,
     // app redirects back to login screen again
-    //this.router.navigate(['']);
+    this.router.navigate(['']);
   }
 }
