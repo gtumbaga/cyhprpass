@@ -1,3 +1,8 @@
 <p>listing works!</p>
 <a routerLink="/listing/settings">Settings</a><br/>
 <a routerLink="/listing/add_new">Add New</a><br/>
+
+<div class="list-group-item" *ngFor="let entry of sharedService.titlesList; let i = index">
+  {{ entry.newId }} {{ entry.title }}
+  <hr>
+</div>

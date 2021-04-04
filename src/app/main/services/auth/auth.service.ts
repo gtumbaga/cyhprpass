@@ -5,6 +5,7 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { User } from 'firebase';
 import { CryptoService } from '../crypto/crypto.service';
+import { SharedService } from '../shared/shared.service';
 // @firebase/app
 
 
@@ -14,7 +15,13 @@ import { CryptoService } from '../crypto/crypto.service';
 export class AuthService {
   user: User;
 
-  constructor(public afAuth: AngularFireAuth, public afs: AngularFirestore, public  router: Router, private cryptoService: CryptoService) {
+  constructor(
+    public afAuth: AngularFireAuth,
+    public afs: AngularFirestore,
+    public  router: Router,
+    private cryptoService: CryptoService,
+    public sharedService: SharedService
+  ) {
     this.afAuth.authState.subscribe(user => {
       if (user){
         this.user = user;
@@ -30,6 +37,10 @@ export class AuthService {
     const userDocExists = await this.afs.collection('users').doc(uid).ref.get()
     .then((docSnapshot) => {
       if (docSnapshot.exists) {
+        const myData = docSnapshot.data();
+        console.log(myData);
+        this.sharedService.initTitlesList(myData.entryTitles);
+
         return true;
       } else {
         return false;
@@ -82,7 +93,7 @@ export class AuthService {
       console.log(`Unable to log in with google account, due this this error: ${err}`);
       return false;
     }
-  }
+  } // loginWithGoogle
 
   async saveEntry(fields: Array<any>): Promise<any> {
 
@@ -116,21 +127,17 @@ export class AuthService {
         }));
 
         console.log(cipherPayload);
-        payload.push(
-          {
-            label: myLabel,
-            data: cipherPayload,
-            privateText: isPrivate
-          }
-        );
+        return {
+          label: myLabel,
+          data: cipherPayload,
+          privateText: isPrivate
+        };
       } else {
-        payload.push(
-          {
-            label: myLabel,
-            data: entry.data,
-            privateText: isPrivate
-          }
-        );
+        return {
+          label: myLabel,
+          data: entry.data,
+          privateText: isPrivate
+        };
       }
 
     }); // map
@@ -138,14 +145,24 @@ export class AuthService {
     Promise.all(promiseArr).then(async (resultsArray) => {
       const newId = this.afs.createId();
       console.log('payload:');
-      console.log(payload);
+      console.log(resultsArray);
       const saveResult = await this.afs.collection('entries').doc(newId).set({
         email: user.email,
-        payload
+        payload: resultsArray
       });
 
-      //console.log('saveResult');
-      //console.log(saveResult);
+      this.sharedService.addToTitlesList(
+        {
+          newId,
+          title
+        }
+      );
+
+      this.saveTitlesListDB();
+
+      this.router.navigate(['/listing']);
+
+
     }).catch((err) => {
       // do something when any of the promises in array are rejected
       console.log(`An error occured looping over private text: ${err}`);
@@ -154,5 +171,12 @@ export class AuthService {
 
 
   } // saveEntry
+
+  public async saveTitlesListDB(): Promise<void> {
+    const  user  =  JSON.parse(localStorage.getItem('user'));
+    await this.afs.collection('users').doc(user.uid).update(
+      { entryTitles: this.sharedService.titlesList }
+    );
+  }
 
 } // AuthService

@@ -8,6 +8,15 @@ export class SharedService {
   public titlesList: Array<any>;
 
   constructor() {
+    this.titlesList = Array();
+  }
+
+  public initTitlesList(data: any): void {
+    this.titlesList = data;
+  }
+
+  public addToTitlesList(data: any): void {
+    this.titlesList.push(data);
   }
 
   public async setMasterKey(importedKey: CryptoKey): Promise<void> {

@@ -9,7 +9,7 @@ import { AuthService } from '../../services/auth/auth.service';
 })
 export class ListingComponent implements OnInit {
 
-  constructor() { }
+  constructor(public sharedService: SharedService) { }
 
   ngOnInit(): void {
   }
