@@ -6,9 +6,11 @@ import { Injectable } from '@angular/core';
 export class SharedService {
   public importedKey: CryptoKey;
   public titlesList: Array<any>;
+  public currentEntryID: string;
 
   constructor() {
     this.titlesList = Array();
+    this.currentEntryID = '';
   }
 
   public initTitlesList(data: any): void {

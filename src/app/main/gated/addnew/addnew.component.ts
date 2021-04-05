@@ -21,11 +21,6 @@ export class AddnewComponent implements OnInit {
         privateText: false
       },
       {
-        label: 'URL',
-        data: '',
-        privateText: false
-      },
-      {
         label: 'Username',
         data: '',
         privateText: false
@@ -34,6 +29,16 @@ export class AddnewComponent implements OnInit {
         label: 'Password',
         data: '',
         privateText: true
+      },
+      {
+        label: 'Email',
+        data: '',
+        privateText: false
+      },
+      {
+        label: 'URL',
+        data: '',
+        privateText: false
       },
       {
         label: 'TOTP',

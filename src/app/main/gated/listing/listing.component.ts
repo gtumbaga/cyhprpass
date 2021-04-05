@@ -8,10 +8,30 @@ import { AuthService } from '../../services/auth/auth.service';
   styleUrls: ['./listing.component.scss']
 })
 export class ListingComponent implements OnInit {
+  public currentEntry: any;
 
-  constructor(public sharedService: SharedService) { }
+  constructor(public sharedService: SharedService, private authService: AuthService) { }
 
   ngOnInit(): void {
+  }
+
+  public async loadEntry(id: string): Promise<void> {
+    console.log(`loading entry: ${id}`);
+
+    const entryData = await this.authService.grabEntry(id);
+
+
+    // show modal after we've set all the things in it.
+    this.sharedService.currentEntryID = id;
+    this.showModal();
+  }
+
+  public showModal(): void {
+    document.getElementById('entryModal').classList.add('show');
+  }
+
+  public hideModal(): void {
+    document.getElementById('entryModal').classList.remove('show');
   }
 
 }
