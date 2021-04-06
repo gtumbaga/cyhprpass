@@ -109,7 +109,7 @@ export class AuthService {
     const importedKey = await this.cryptoService.JWK2CryptoKey(atob(theKeyB64Str));
 
     // iterate through each entry, and encrypt the ones that need to be.
-    let promiseArr = fields.map(async (entry) => {
+    const promiseArr = fields.map(async (entry) => {
       const myLabel = entry.label;
       const isPrivate = entry.privateText;
 
@@ -147,14 +147,15 @@ export class AuthService {
       console.log('payload:');
       console.log(resultsArray);
       const saveResult = await this.afs.collection('entries').doc(newId).set({
-        email: user.email,
+        uid: user.uid,
         payload: resultsArray
       });
 
       this.sharedService.addToTitlesList(
         {
-          newId,
-          title
+          id: newId,
+          title,
+          username: resultsArray[1].data
         }
       );
 
@@ -173,10 +174,22 @@ export class AuthService {
   } // saveEntry
 
   public async saveTitlesListDB(): Promise<void> {
-    const  user  =  JSON.parse(localStorage.getItem('user'));
+    // const  user  =  JSON.parse(localStorage.getItem('user'));
+    const user = this.user;
     await this.afs.collection('users').doc(user.uid).update(
       { entryTitles: this.sharedService.titlesList }
     );
+  }
+
+  public async grabEntry(id: string): Promise<any> {
+    const userInfo = await this.afs.collection('entries').doc(id).ref.get()
+    .then((results) => {
+      return results.data();
+    })
+    .catch((err) => {
+      console.log(`Error trying to get entry data: ${err}`);
+    });
+    return userInfo;
   }
 
 } // AuthService

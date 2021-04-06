@@ -1,7 +1,54 @@
+<!-- Modal -->
+<div class="modal fade" tabindex="-1" id="entryModal">
+  <div class="modal-dialog modal-md modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ currentEntry.payload[0].data }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="hideModal()"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let formField of currentEntry.payload; let i = index">
+            <div class="row" *ngIf="formField.label !== 'Title'">
+              <div class="col-sm-12 mb-2">
+                <label>{{ formField.label }}</label>
+              </div>
+              <div class="col-sm-12">
+                <div class="toggler-group">
+                  <input type="checkbox" name="toggler" id="toggler{{i}}"  class="toggler" >
+                  <label for="toggler{{i}}" class="holder btn btn-default" [hidden]="formField.privateText==false">
+                    <i class="fa fa-lg fa-eye"></i>
+                  </label>
+                  <div class="input-holder">
+                    <input class="form-control viewable" type="text" [hidden]="formField.privateText==true" value="{{ formField.data }}" readonly>
+                    <input class="form-control pw" type="password" [hidden]="formField.privateText==false" value="{{ formField.data }}" readonly>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="hideModal()">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
 <p>listing works!</p>
 <a routerLink="/listing/settings">Settings</a><br/>
 <a routerLink="/listing/add_new">Add New</a><br/>
 
-<div class="list-group-item" *ngFor="let entry of sharedService.titlesList; let i = index">
-  {{ entry.newId }} {{ entry.title }}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="list-group-item" *ngFor="let entry of sharedService.titlesList; let i = index">
+        <div class="item-holder" (click)="loadEntry(entry.id)" data-bs-toggle="modal" data-bs-target="#entryModal">
+          <h4>{{ entry.title }}</h4>
+          <span class="username">{{entry.username}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
