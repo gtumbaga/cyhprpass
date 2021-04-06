@@ -147,7 +147,7 @@ export class AuthService {
       console.log('payload:');
       console.log(resultsArray);
       const saveResult = await this.afs.collection('entries').doc(newId).set({
-        email: user.email,
+        uid: user.uid,
         payload: resultsArray
       });
 
