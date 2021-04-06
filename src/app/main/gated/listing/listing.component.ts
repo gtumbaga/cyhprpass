@@ -16,21 +16,24 @@ export class ListingComponent implements OnInit {
     private authService: AuthService,
     private cryptoService: CryptoService
   ) {
-    this.currentEntry = {
-      uid: '',
-      payload: [
-        {
-          data: 'loading...',
-            label: 'Title',
-            privateText: false
-        }
-      ]
-    };
+    this.clearCurrentEntry();
   }
 
   ngOnInit(): void {
   }
 
+  private clearCurrentEntry(): void {
+    this.currentEntry = {
+      uid: '',
+      payload: [
+        {
+          data: '',
+            label: '',
+            privateText: false
+        }
+      ]
+    };
+  }
   public async loadEntry(id: string): Promise<void> {
     console.log(`loading entry: ${id}`);
 
@@ -97,6 +100,11 @@ export class ListingComponent implements OnInit {
 
   public hideModal(): void {
     document.getElementById('entryModal').classList.remove('show');
+    this.clearCurrentEntry();
+  }
+
+  public copyData(index: number): void {
+    console.log(`this is meant to copy index ${index} to the clipboard`);
   }
 
 }

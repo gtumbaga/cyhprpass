@@ -41,7 +41,7 @@ export class AddnewComponent implements OnInit {
         privateText: false
       },
       {
-        label: 'TOTP',
+        label: 'Authenticator Key (TOTP)',
         data: '',
         privateText: true
       }

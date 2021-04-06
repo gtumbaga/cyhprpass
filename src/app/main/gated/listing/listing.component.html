@@ -14,14 +14,23 @@
                 <label>{{ formField.label }}</label>
               </div>
               <div class="col-sm-12">
-                <div class="toggler-group">
-                  <input type="checkbox" name="toggler" id="toggler{{i}}"  class="toggler" >
-                  <label for="toggler{{i}}" class="holder btn btn-default" [hidden]="formField.privateText==false">
-                    <i class="fa fa-lg fa-eye"></i>
-                  </label>
-                  <div class="input-holder">
-                    <input class="form-control viewable" type="text" [hidden]="formField.privateText==true" value="{{ formField.data }}" readonly>
-                    <input class="form-control pw" type="password" [hidden]="formField.privateText==false" value="{{ formField.data }}" readonly>
+                <div class="row">
+                  <div class="col-sm-11">
+                    <div class="toggler-group">
+                      <input type="checkbox" name="toggler" id="toggler{{i}}"  class="toggler" >
+                      <label for="toggler{{i}}" class="holder btn btn-default" [hidden]="formField.privateText==false">
+                        <i class="fa fa-lg fa-eye"></i>
+                      </label>
+                      <div class="input-holder">
+                        <label class="form-control viewable" [hidden]="formField.privateText==true">{{ formField.data }}</label>
+                        <label class="form-control pw light" [hidden]="formField.privateText==false"><small><em>hidden</em></small></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-1">
+                    <div class="btnCopy" (click)="copyData(i)">
+                      <i class="fa fa-lg fa-clone"></i>
+                    </div>
                   </div>
                 </div>
               </div>

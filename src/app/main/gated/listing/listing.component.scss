@@ -54,9 +54,24 @@
     display: none;
   }
 }
-.input-holder input {
+.input-holder label {
   padding-right: 80px !important;
+  word-wrap: break-word;
+
+  &.pw {
+    color: #bbb;
+  }
 }
+.btnCopy {
+  cursor: pointer;
+  color: #aaa;
+  transition: color .5s ease;
+
+  &:hover {
+    color: #000;
+  }
+}
+
 input[type=checkbox].toggler {
   &:checked ~ label.holder {
     background-color: #0d6efd;
@@ -65,10 +80,10 @@ input[type=checkbox].toggler {
       color: #fff;
     }
   }
-  &:checked ~ .input-holder input {
+  &:checked ~ .input-holder label {
     display: block !important;
   }
-  &:checked ~ .input-holder input.pw {
+  &:checked ~ .input-holder label.pw {
     display: none !important;
   }
   
