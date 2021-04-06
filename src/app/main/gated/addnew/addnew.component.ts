@@ -31,6 +31,11 @@ export class AddnewComponent implements OnInit {
         privateText: true
       },
       {
+        label: 'Authenticator Key (TOTP)',
+        data: '',
+        privateText: true
+      },
+      {
         label: 'Email',
         data: '',
         privateText: false
@@ -39,11 +44,6 @@ export class AddnewComponent implements OnInit {
         label: 'URL',
         data: '',
         privateText: false
-      },
-      {
-        label: 'Authenticator Key (TOTP)',
-        data: '',
-        privateText: true
       }
     );
   }
