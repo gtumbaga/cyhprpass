@@ -1,3 +1,20 @@
+.small {
+  font-weight: bold;
+  font-size: 12px;
+  color: #777;
+}
+#group-item-0 {
+  display: none;
+}
+.modal .list-group-item {
+  background-color: rgba(13,110,253,0);
+  transition: background-color 1s ease-in;
+
+  &.highlight {
+  background-color: rgba(13,110,253,1);
+  transition: background-color 0s ease;
+  }
+}
 .item-holder {
   cursor: pointer;
 }
@@ -54,9 +71,24 @@
     display: none;
   }
 }
-.input-holder input {
-  padding-right: 80px !important;
+.input-holder.eyeball-true label {
+  padding-right: 60px !important;
+  word-wrap: break-word;
+
+  &.pw {
+    color: #bbb;
+  }
 }
+.btnCopy {
+  cursor: pointer;
+  color: #aaa;
+  transition: color .5s ease;
+
+  &:hover {
+    color: #000;
+  }
+}
+
 input[type=checkbox].toggler {
   &:checked ~ label.holder {
     background-color: #0d6efd;
@@ -65,10 +97,10 @@ input[type=checkbox].toggler {
       color: #fff;
     }
   }
-  &:checked ~ .input-holder input {
+  &:checked ~ .input-holder label {
     display: block !important;
   }
-  &:checked ~ .input-holder input.pw {
+  &:checked ~ .input-holder label.pw {
     display: none !important;
   }
   

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { SharedService } from '../../services/shared/shared.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { CryptoService } from '../../services/crypto/crypto.service';
@@ -14,23 +15,27 @@ export class ListingComponent implements OnInit {
   constructor(
     public sharedService: SharedService,
     private authService: AuthService,
-    private cryptoService: CryptoService
+    private cryptoService: CryptoService,
+    private clipboard: Clipboard
   ) {
-    this.currentEntry = {
-      uid: '',
-      payload: [
-        {
-          data: 'loading...',
-            label: 'Title',
-            privateText: false
-        }
-      ]
-    };
+    this.clearCurrentEntry();
   }
 
   ngOnInit(): void {
   }
 
+  private clearCurrentEntry(): void {
+    this.currentEntry = {
+      uid: '',
+      payload: [
+        {
+          data: '',
+            label: '',
+            privateText: false
+        }
+      ]
+    };
+  }
   public async loadEntry(id: string): Promise<void> {
     console.log(`loading entry: ${id}`);
 
@@ -97,6 +102,17 @@ export class ListingComponent implements OnInit {
 
   public hideModal(): void {
     document.getElementById('entryModal').classList.remove('show');
+    this.clearCurrentEntry();
+  }
+
+  public copyData(index: number): void {
+    const dataToCopy = this.currentEntry.payload[index].data;
+    this.clipboard.copy(dataToCopy);
+    console.log(`this is meant to copy index ${index} to the clipboard`);
+
+    const myItem = document.getElementById(`group-item-${index}`);
+    myItem.classList.add('highlight');
+    setTimeout(() =>{ myItem.classList.remove('highlight'); }, 100);
   }
 
 }
