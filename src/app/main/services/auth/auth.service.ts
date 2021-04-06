@@ -184,8 +184,7 @@ export class AuthService {
   public async grabEntry(id: string): Promise<any> {
     const userInfo = await this.afs.collection('entries').doc(id).ref.get()
     .then((results) => {
-      console.log('entry results');
-      console.log(results.data());
+      return results.data();
     })
     .catch((err) => {
       console.log(`Error trying to get entry data: ${err}`);
