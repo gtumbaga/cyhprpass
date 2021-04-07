@@ -16,7 +16,29 @@
               <div class="col-sm-12">
                 <div class="row">
                   <div class="col-sm-11 col-10">
-                    <div class="toggler-group">
+                    <div *ngIf="i == 3">
+                      <div class="row">
+                        <div class="col-7">
+                          <span class="data">
+                            000-000
+                          </span>
+                        </div> <!-- /col-7 -->
+                        <div class="col-5">
+                          <div class="progress">
+                            <div
+                              class="progress-bar progress-bar-striped progress-bar-animated"
+                              [ngClass]="{
+                               'bg-warning': currentTotpProgress >= 60,
+                               'bg-danger': currentTotpProgress >= 80
+                              }"
+                              id="totpProgressBar"
+                              role="progressbar"
+                            ></div>
+                          </div>
+                        </div> <!-- /col-5 -->
+                      </div>
+                    </div>
+                    <div class="toggler-group" *ngIf="i != 3">
                       <input type="checkbox" name="toggler" id="toggler{{i}}"  class="toggler" >
                       <label for="toggler{{i}}" class="holder btn btn-default" [hidden]="formField.privateText==false">
                         <i class="fa fa-lg fa-eye"></i>

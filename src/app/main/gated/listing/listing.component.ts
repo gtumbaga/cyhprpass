@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { SharedService } from '../../services/shared/shared.service';
 import { AuthService } from '../../services/auth/auth.service';
@@ -9,8 +9,10 @@ import { CryptoService } from '../../services/crypto/crypto.service';
   templateUrl: './listing.component.html',
   styleUrls: ['./listing.component.scss']
 })
-export class ListingComponent implements OnInit {
+export class ListingComponent implements OnInit, OnDestroy {
   public currentEntry: any;
+  private myInterval: any;
+  public currentTotpProgress: number;
 
   constructor(
     public sharedService: SharedService,
@@ -19,9 +21,14 @@ export class ListingComponent implements OnInit {
     private clipboard: Clipboard
   ) {
     this.clearCurrentEntry();
+    this.currentTotpProgress = 0;
+
   }
 
   ngOnInit(): void {
+  }
+
+  ngOnDestroy(): void {
   }
 
   private clearCurrentEntry(): void {
@@ -98,11 +105,32 @@ export class ListingComponent implements OnInit {
 
   public showModal(): void {
     document.getElementById('entryModal').classList.add('show');
+    this.myInterval = setInterval(() => {this.totpProgressBar(); }, 300);
   }
 
   public hideModal(): void {
     document.getElementById('entryModal').classList.remove('show');
     this.clearCurrentEntry();
+    clearInterval(this.myInterval);
+  }
+
+  private totpProgressBar(): void {
+    const d = new Date();
+    const seconds = d.getSeconds();
+
+    // check if seconds is higher than 30
+    // split 0-60 to two groups of 1-30 and 1-30
+    const netSeconds = ((seconds + 1) > 30) ? (seconds - 30) : seconds;
+    // calculate into a percentage
+    const calculatedProgress =  Math.ceil(( (netSeconds + 1) / 30) * 100);
+    // we will adjust any percentage under 7 to be 0, so that the progress bar properly looks like it reset.
+    const adjustedProgress = (calculatedProgress < 7) ? 0 : calculatedProgress;
+
+    if (this.currentTotpProgress !== adjustedProgress) {
+      this.currentTotpProgress = adjustedProgress;
+      document.getElementById('totpProgressBar').style.width = `${this.currentTotpProgress}%`;
+      // console.log(this.currentTotpProgress);
+    }
   }
 
   public copyData(index: number): void {
