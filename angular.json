@@ -33,7 +33,10 @@
               "node_modules/font-awesome/css/font-awesome.min.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "node_modules/jsotp/lib/jsotp.js"
+            ]
           },
           "configurations": {
             "production": {
