@@ -113,14 +113,6 @@ export class EditComponent implements OnInit {
     this.formFields.splice(index, 1);
   }
 
-  public showModal(): void {
-    document.getElementById('deleteModal').classList.add('show');
-  }
-
-  public hideModal(): void {
-    document.getElementById('deleteModal').classList.remove('show');
-  }
-
   public async deleteThisEntry(): Promise<void> {
     await this.authService.deleteEntry(this.docID);
   }

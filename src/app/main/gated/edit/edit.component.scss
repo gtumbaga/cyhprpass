@@ -42,26 +42,3 @@ input[type=checkbox].toggler {
   
 }
 
-.modal {
-  display: block;
-  margin-top: -100vh;
-  background-color: rgba(0,0,0,0);
-  transition: background-color .5s ease;
-
-
-  .modal-dialog {
-    padding-top: 50px;
-    margin-top: -50%;
-    transition: margin .5s ease;
-  }
-
-
-  &.show {
-    margin-top: 0;
-    background-color: rgba(0,0,0,0.7);
-
-    .modal-dialog {
-      margin-top: 0;
-    }
-  }
-}
