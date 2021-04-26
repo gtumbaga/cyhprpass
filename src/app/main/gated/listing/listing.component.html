@@ -8,7 +8,7 @@
       </div>
       <div class="modal-body">
         <ul class="list-group list-group-flush">
-          <li class="list-group-item" *ngFor="let formField of currentEntry.payload; let i = index" id="group-item-{{i}}">
+          <li class="list-group-item" *ngFor="let formField of currentEntry.payload; let i = index" id="group-item-{{i}}" [hidden]="i==3 && !currentEntry.payload[3].data">
             <div class="row" *ngIf="formField.label !== 'Title'">
               <div class="col-sm-12 mb-2">
                 <label class="small">{{ formField.label }}</label>
