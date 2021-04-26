@@ -173,6 +173,84 @@ export class AuthService {
 
   } // saveEntry
 
+  async saveEditedEntry(docID: string, fields: Array<any>): Promise<any> {
+
+    const payload: Array<any> = new Array();
+
+    const  user  =  JSON.parse(localStorage.getItem('user'));
+
+
+    // get title out of fields aray so we can save it to User doc
+    const title = fields[0].data;
+
+    const theKeyB64Str = localStorage.getItem('master-string-encoded');
+    const importedKey = await this.cryptoService.JWK2CryptoKey(atob(theKeyB64Str));
+
+    // iterate through each entry, and encrypt the ones that need to be.
+    const promiseArr = fields.map(async (entry) => {
+      const myLabel = entry.label;
+      const isPrivate = entry.privateText;
+
+      if (isPrivate === true) {
+        const theIV = this.cryptoService.generateRandomIV();
+
+        const stringToEncrypt = entry.data;
+
+        const gotEncrypted = await this.cryptoService.encryptMessage(importedKey, theIV, `${theKeyB64Str}${theKeyB64Str}`, stringToEncrypt);
+        const gotEncrypted2string = this.cryptoService.ab2str(gotEncrypted);
+
+        const cipherPayload = btoa(JSON.stringify({
+          iv: this.cryptoService.ab2str(theIV),
+          cipher: gotEncrypted2string
+        }));
+
+        console.log(cipherPayload);
+        return {
+          label: myLabel,
+          data: cipherPayload,
+          privateText: isPrivate
+        };
+      } else {
+        return {
+          label: myLabel,
+          data: entry.data,
+          privateText: isPrivate
+        };
+      }
+
+    }); // map
+
+    Promise.all(promiseArr).then(async (resultsArray) => {
+      //const newId = this.afs.createId();
+      //console.log('payload:');
+      //console.log(resultsArray);
+      const saveResult = await this.afs.collection('entries').doc(docID).set({
+        uid: user.uid,
+        payload: resultsArray
+      });
+
+      this.sharedService.updateToTitlesList(
+        {
+          id: docID,
+          title,
+          username: resultsArray[1].data
+        }
+      );
+
+      this.saveTitlesListDB();
+
+      this.router.navigate(['/listing']);
+
+
+    }).catch((err) => {
+      // do something when any of the promises in array are rejected
+      console.log(`An error occured looping over private text: ${err}`);
+
+    });
+
+
+  } // saveEditedEntry
+
   public async saveTitlesListDB(): Promise<void> {
     // const  user  =  JSON.parse(localStorage.getItem('user'));
     const user = this.user;

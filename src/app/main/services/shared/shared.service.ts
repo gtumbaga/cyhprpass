@@ -21,6 +21,18 @@ export class SharedService {
     this.titlesList.push(data);
   }
 
+  public updateToTitlesList(newData: any): void {
+    const currentDocID = newData.id;
+    const newTitlesList = this.titlesList.map((currentData) => {
+      if (currentData.id === currentDocID) {
+        return newData;
+      } else {
+        return currentData;
+      }
+    });
+    this.titlesList = newTitlesList;
+  }
+
   public async setMasterKey(importedKey: CryptoKey): Promise<void> {
     this.importedKey = importedKey;
   }

@@ -76,6 +76,9 @@
     <div class="col-12">
       <div class="list-group-item" *ngFor="let entry of sharedService.titlesList; let i = index">
         <div class="item-holder" (click)="loadEntry(entry.id)" data-bs-toggle="modal" data-bs-target="#entryModal">
+          <div class="controls-holder pull-right">
+            <button class="btn btn-default" routerLink="/listing/edit/{{entry.id}}"><i  class="fa fa-pencil"></i></button>
+          </div>
           <h4>{{ entry.title }}</h4>
           <span class="username">{{entry.username}}</span>
         </div>

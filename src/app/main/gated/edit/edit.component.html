@@ -1,0 +1,60 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <h1>Edit Entry</h1>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="row mb-2">
+        <div class="col">
+          <input class="form-control form-control-lg" type="text" [(ngModel)]="formFields[0].data" placeholder="Title">
+        </div>
+      </div>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item" *ngFor="let formField of formFields; let i = index">
+        <div class="row" *ngIf="formField.label !== 'Title'">
+          <div class="col-sm-4 mb-2">
+            <input class="form-control" type="text" [(ngModel)]="formField.label" placeholder="Name">
+          </div>
+          <div class="col-sm-8">
+            <div class="toggler-group">
+              <input type="checkbox" name="toggler" id="toggler{{i}}"  class="toggler" >
+              <label for="toggler{{i}}" class="holder btn btn-default" [hidden]="formField.privateText==false">
+                <i class="fa fa-lg fa-eye"></i>
+              </label>
+              <div class="input-holder">
+                <input class="form-control viewable" type="text" [hidden]="formField.privateText==true" [(ngModel)]="formField.data" placeholder="Value">
+                <input class="form-control pw" type="password" [hidden]="formField.privateText==false" [(ngModel)]="formField.data" placeholder="Value">
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" name="chkSensitive{{i}}" id="chkSensitive{{i}}" [(ngModel)]="formField.privateText">
+                <label class="form-check-label" for="chkSensitive{{i}}">
+                  <small>Sensitive</small>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col">
+          <button class="btn btn-primary" (click)="addNewRow()"><i class="fa fa-lg fa-plus-square"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row mt-4">
+    <div class="col">
+      <hr />
+      <a class="btn btn-danger float-start btn-lg" [routerLink]="['/listing']">Cancel</a>
+      <button class="btn btn-success float-end btn-lg" (click)="saveEntry()"><i class="fa fa-lg fa-save"></i></button>
+    </div>
+  </div>
+
+</div>

@@ -9,12 +9,14 @@ import { SettingsComponent } from './settings/settings.component';
 
 // Used by Sub Pages.
 import { ReactiveFormsModule, FormsModule  } from '@angular/forms';
+import { EditComponent } from './edit/edit.component';
 
 // Routes
 const GATED_ROUTES: Routes = [
   { path: '', component: ListingComponent },
   { path: 'settings', component: SettingsComponent },
-  { path: 'add_new', component: AddnewComponent }
+  { path: 'add_new', component: AddnewComponent },
+  { path: 'edit/:id', component: EditComponent }
 ]; // GATED_ROUTES
 
 @NgModule({
@@ -22,7 +24,8 @@ const GATED_ROUTES: Routes = [
     ListingComponent,
     SettingsComponent,
     AddnewComponent,
-    SettingsComponent
+    SettingsComponent,
+    EditComponent
   ],
   imports: [
     CommonModule,
