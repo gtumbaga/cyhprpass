@@ -21,6 +21,18 @@ export class SharedService {
     this.titlesList.push(data);
   }
 
+  public updateToTitlesList(newData: any): void {
+    const currentDocID = newData.id;
+    const newTitlesList = this.titlesList.map((currentData) => {
+      if (currentData.id === currentDocID) {
+        return newData;
+      } else {
+        return currentData;
+      }
+    });
+    this.titlesList = newTitlesList;
+  }
+
   public async setMasterKey(importedKey: CryptoKey): Promise<void> {
     this.importedKey = importedKey;
   }
@@ -31,5 +43,20 @@ export class SharedService {
     } else {
       document.getElementById('header-holder').classList.remove('show');
     }
+  }
+
+  public removeFromTitlesList(docID: string): void {
+    let idxToRemove: number;
+
+    this.titlesList.forEach((data, idx) => {
+      if (docID === data.id) {
+        idxToRemove = idx;
+      }
+    });
+
+    console.log(this.titlesList);
+    console.log(`I will now delete ${idxToRemove}`);
+    this.titlesList.splice(idxToRemove, 1);
+    console.log(this.titlesList);
   }
 }

@@ -16,7 +16,7 @@
       <li class="list-group-item" *ngFor="let formField of formFields; let i = index">
         <div class="row" *ngIf="formField.label !== 'Title'">
           <div class="col-sm-4 mb-2">
-            <input class="form-control" type="text" [(ngModel)]="formField.label" placeholder="Name">
+            <input class="form-control" type="text" [readonly]="i<=3" [(ngModel)]="formField.label" placeholder="Name">
           </div>
           <div class="col-sm-8">
             <div class="toggler-group">
@@ -28,7 +28,7 @@
                 <input class="form-control viewable" type="text" [hidden]="formField.privateText==true" [(ngModel)]="formField.data" placeholder="Value">
                 <input class="form-control pw" type="password" [hidden]="formField.privateText==false" [(ngModel)]="formField.data" placeholder="Value">
               </div>
-              <div class="form-check">
+              <div class="form-check" [hidden]="i<=3">
                 <input class="form-check-input" type="checkbox" value="" name="chkSensitive{{i}}" id="chkSensitive{{i}}" [(ngModel)]="formField.privateText">
                 <label class="form-check-label" for="chkSensitive{{i}}">
                   <small>Sensitive</small>
