@@ -259,6 +259,14 @@ export class AuthService {
     );
   }
 
+  public async deleteEntry(docID: string): Promise<void> {
+    const saveResult = await this.afs.collection('entries').doc(docID).delete();
+    this.sharedService.removeFromTitlesList(docID);
+    await this.saveTitlesListDB();
+    this.router.navigate(['/listing']);
+
+  }
+
   public async grabEntry(id: string): Promise<any> {
     const userInfo = await this.afs.collection('entries').doc(id).ref.get()
     .then((results) => {

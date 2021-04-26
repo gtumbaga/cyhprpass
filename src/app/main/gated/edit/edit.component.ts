@@ -10,7 +10,7 @@ import { CryptoService } from '../../services/crypto/crypto.service';
   styleUrls: ['./edit.component.scss']
 })
 export class EditComponent implements OnInit {
-  private docID: string;
+  public docID: string;
   public formFields: Array<any>;
 
   constructor(
@@ -107,5 +107,21 @@ export class EditComponent implements OnInit {
         privateText: false
       }
     );
+  }
+
+  public removeField(index): void {
+    this.formFields.splice(index, 1);
+  }
+
+  public showModal(): void {
+    document.getElementById('deleteModal').classList.add('show');
+  }
+
+  public hideModal(): void {
+    document.getElementById('deleteModal').classList.remove('show');
+  }
+
+  public async deleteThisEntry(): Promise<void> {
+    await this.authService.deleteEntry(this.docID);
   }
 }

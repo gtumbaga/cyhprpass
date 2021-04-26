@@ -44,4 +44,19 @@ export class SharedService {
       document.getElementById('header-holder').classList.remove('show');
     }
   }
+
+  public removeFromTitlesList(docID: string): void {
+    let idxToRemove: number;
+
+    this.titlesList.forEach((data, idx) => {
+      if (docID === data.id) {
+        idxToRemove = idx;
+      }
+    });
+
+    console.log(this.titlesList);
+    console.log(`I will now delete ${idxToRemove}`);
+    this.titlesList.splice(idxToRemove, 1);
+    console.log(this.titlesList);
+  }
 }
