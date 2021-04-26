@@ -3,6 +3,8 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { SharedService } from '../../services/shared/shared.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { CryptoService } from '../../services/crypto/crypto.service';
+//import { jsotp } from '../../../../../node_modules/jsotp/lib/jsotp.js';
+import * as jsotp from 'jsotp';
 
 @Component({
   selector: 'app-listing',
@@ -13,6 +15,7 @@ export class ListingComponent implements OnInit, OnDestroy {
   public currentEntry: any;
   private myInterval: any;
   public currentTotpProgress: number;
+  public currentTotpCode: string;
 
   constructor(
     public sharedService: SharedService,
@@ -104,14 +107,14 @@ export class ListingComponent implements OnInit, OnDestroy {
   }
 
   public showModal(): void {
-    document.getElementById('entryModal').classList.add('show');
-    this.myInterval = setInterval(() => {this.totpProgressBar(); }, 300);
+    this.myInterval = setInterval(() => {
+    this.totpProgressBar();
+    }, 300);
   }
 
   public hideModal(): void {
-    document.getElementById('entryModal').classList.remove('show');
-    this.clearCurrentEntry();
     clearInterval(this.myInterval);
+    this.clearCurrentEntry();
   }
 
   private totpProgressBar(): void {
@@ -130,8 +133,47 @@ export class ListingComponent implements OnInit, OnDestroy {
       this.currentTotpProgress = adjustedProgress;
       document.getElementById('totpProgressBar').style.width = `${this.currentTotpProgress}%`;
       // console.log(this.currentTotpProgress);
+      // now lets also calculate the totp.
+      const totpSecret = this.getKeyFromInput(this.currentEntry.payload[3].data);
+      try {
+        const totp = jsotp.TOTP(totpSecret);
+        this.currentTotpCode = totp.now();
+      } catch (err) {
+        console.log(`error occurred trying to get totp from your secret. ${err}`);
+        this.currentTotpCode = `error. Probably bad key.`;
+      }
     }
+
+
   }
+
+  private getKeyFromInput(theInput: string): string {
+  // first, lets remove the spaces
+  const currentKey = theInput.replace(/\s/g, '');
+
+  // console.log(`currentKey: ${currentKey}`);
+
+  if (currentKey.startsWith('otpauth://')) {
+    // we will need to retrieve just the key out of the entire string
+    const tmpSplit = theInput.split('?');
+    const queryString = `?${tmpSplit[1]}`;
+    const urlParams = new URLSearchParams(queryString);
+
+    let otpKey = urlParams.get('secret');
+
+    if (otpKey.length > 8 && otpKey.length < 56) {
+      // we will keep adding A's to the end until its 64 length
+      while (otpKey.length < 56) {
+        otpKey = `${otpKey}A`;
+      } // while
+      console.log(otpKey);
+      return otpKey;
+    } // if otpKey.length
+  } else {
+    return currentKey;
+  }
+} // getKeyFromInput
+
 
   public copyData(index: number): void {
     const dataToCopy = this.currentEntry.payload[index].data;
