@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Clipboard } from '@angular/cdk/clipboard';
 import { SharedService } from '../../services/shared/shared.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { CryptoService } from '../../services/crypto/crypto.service';
@@ -20,8 +19,7 @@ export class ListingComponent implements OnInit, OnDestroy {
   constructor(
     public sharedService: SharedService,
     private authService: AuthService,
-    private cryptoService: CryptoService,
-    private clipboard: Clipboard
+    private cryptoService: CryptoService
   ) {
     this.clearCurrentEntry();
     this.currentTotpProgress = 0;
@@ -174,15 +172,42 @@ export class ListingComponent implements OnInit, OnDestroy {
   }
 } // getKeyFromInput
 
+public formatTOTP(totp: string): string {
+  if (totp) {
+    const prefix = totp.substr(0, 3);
+    const suffix = totp.substr(3, 3);
+    return `${prefix} ${suffix}`;
+  } else {
+    return '';
+  }
+
+} // formatTOTP
+
 
   public copyData(index: number): void {
-    const dataToCopy = this.currentEntry.payload[index].data;
-    this.clipboard.copy(dataToCopy);
-    console.log(`this is meant to copy index ${index} to the clipboard`);
-
     const myItem = document.getElementById(`group-item-${index}`);
+    const myClipboard = document.getElementById(`tmpclipboard`) as HTMLInputElement;
+    const dataToCopy = (index === 3) ? this.currentTotpCode : this.currentEntry.payload[index].data.toString();
+    // console.log(`this is meant to copy index ${index} to the clipboard. data copied: ${dataToCopy}`);
+
+    // Put data to copy in a hidden input
+    // then select it, and copy to clipboard
+    // and then clear the txt in the input
+    myClipboard.value = dataToCopy;
+    myClipboard.select();
+    myClipboard.setSelectionRange(0, 99999); /* For mobile devices */
+    document.execCommand('copy');
+    myClipboard.value = '';
+
     myItem.classList.add('highlight');
-    setTimeout(() =>{ myItem.classList.remove('highlight'); }, 100);
+    setTimeout(() => {
+      myItem.classList.remove('highlight');
+    }, 100);
+
+
+
+
   }
+
 
 }

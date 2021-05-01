@@ -1,3 +1,8 @@
+#tmpclipboard {
+  margin: -999px;
+  float: left;
+  opacity: 0;
+}
 .small {
   font-weight: bold;
   font-size: 12px;
@@ -104,4 +109,12 @@ input[type=checkbox].toggler {
     display: none !important;
   }
   
+}
+.row.totp {
+  margin-top: -14px;
+}
+.data.totp {
+  font-weight: bold;
+  font-size: 30px;
+  font-family: "Courier New";
 }

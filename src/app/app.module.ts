@@ -26,8 +26,7 @@ import { firebaseConfig } from '../_secrets/firebaseConfig';
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
-    AngularFirestoreModule,
-
+    AngularFirestoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
