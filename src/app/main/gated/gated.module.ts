@@ -31,7 +31,7 @@ const GATED_ROUTES: Routes = [
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    RouterModule.forChild(GATED_ROUTES),
+    RouterModule.forChild(GATED_ROUTES)
   ],
   exports: [
     RouterModule

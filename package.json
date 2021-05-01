@@ -28,6 +28,7 @@
     "firebase": "^5.11.1",
     "font-awesome": "^4.7.0",
     "jsotp": "^1.0.4",
+    "ngx-clipboard": "^14.0.1",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

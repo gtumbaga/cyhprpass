@@ -7,6 +7,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="hideModal()"></button>
       </div>
       <div class="modal-body">
+        <input type="text" id="tmpclipboard" value="">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" *ngFor="let formField of currentEntry.payload; let i = index" id="group-item-{{i}}" [hidden]="i==3 && !currentEntry.payload[3].data">
             <div class="row" *ngIf="formField.label !== 'Title'">
