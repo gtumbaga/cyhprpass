@@ -172,11 +172,22 @@ export class ListingComponent implements OnInit, OnDestroy {
   }
 } // getKeyFromInput
 
+public formatTOTP(totp: string): string {
+  if (totp) {
+    const prefix = totp.substr(0, 3);
+    const suffix = totp.substr(3, 3);
+    return `${prefix} ${suffix}`;
+  } else {
+    return '';
+  }
+
+} // formatTOTP
+
 
   public copyData(index: number): void {
     const myItem = document.getElementById(`group-item-${index}`);
     const myClipboard = document.getElementById(`tmpclipboard`) as HTMLInputElement;
-    const dataToCopy = this.currentEntry.payload[index].data.toString();
+    const dataToCopy = (index === 3) ? this.currentTotpCode : this.currentEntry.payload[index].data.toString();
     // console.log(`this is meant to copy index ${index} to the clipboard. data copied: ${dataToCopy}`);
 
     // Put data to copy in a hidden input

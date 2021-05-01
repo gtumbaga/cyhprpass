@@ -18,10 +18,10 @@
                 <div class="row">
                   <div class="col-sm-11 col-10">
                     <div *ngIf="i == 3">
-                      <div class="row">
+                      <div class="row totp">
                         <div class="col-7">
-                          <span class="data">
-                            {{ currentTotpCode }}
+                          <span class="data totp">
+                            {{ formatTOTP(currentTotpCode) }}
                           </span>
                         </div> <!-- /col-7 -->
                         <div class="col-5">
