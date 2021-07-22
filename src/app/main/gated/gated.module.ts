@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ListingComponent } from './listing/listing.component';
 import { AddnewComponent } from './addnew/addnew.component';
 import { SettingsComponent } from './settings/settings.component';
+import { PasswordGenComponent } from '../shared-components/password-gen/password-gen.component';
 
 // Used by Sub Pages.
 import { ReactiveFormsModule, FormsModule  } from '@angular/forms';
@@ -25,7 +26,8 @@ const GATED_ROUTES: Routes = [
     SettingsComponent,
     AddnewComponent,
     SettingsComponent,
-    EditComponent
+    EditComponent,
+    PasswordGenComponent
   ],
   imports: [
     CommonModule,
