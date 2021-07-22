@@ -28,7 +28,8 @@
     </div>
   </div>
   <div>
-    <app-password-gen></app-password-gen>
+    <app-password-gen [(generatedPW)]="generatePassword"></app-password-gen>
+    {{ generatePassword }}
   </div>
   <div class="card">
     <div class="card-header">

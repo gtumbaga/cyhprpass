@@ -12,6 +12,7 @@ import { CryptoService } from '../../services/crypto/crypto.service';
 export class EditComponent implements OnInit {
   public docID: string;
   public formFields: Array<any>;
+  public generatePassword: string;
 
   constructor(
     private route: ActivatedRoute,
