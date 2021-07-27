@@ -6,7 +6,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./password-gen.component.scss']
 })
 export class PasswordGenComponent implements OnInit {
-  @Input() generatedPW;
+  @Input() generatedPW: string;
   @Output() generatedPWChange = new EventEmitter<string>();
 
   constructor() { }
@@ -15,5 +15,6 @@ export class PasswordGenComponent implements OnInit {
     // this is how to send string back to the bind where this component was called
     this.generatedPWChange.emit('fake password...');
   }
+
 
 }

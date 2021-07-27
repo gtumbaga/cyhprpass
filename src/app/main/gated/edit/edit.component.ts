@@ -117,4 +117,8 @@ export class EditComponent implements OnInit {
   public async deleteThisEntry(): Promise<void> {
     await this.authService.deleteEntry(this.docID);
   }
+
+  public useGeneratedPW(): void {
+    //
+  }
 }

@@ -17,6 +17,28 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" tabindex="-1" id="passwordModal" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-md modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Generate Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div>
+          <app-password-gen [(generatedPW)]="generatePassword"></app-password-gen>
+          {{ generatePassword }}
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="useGeneratedPW()">Use Password</button> 
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="container">
   <div class="row">
@@ -27,15 +49,11 @@
       </div>
     </div>
   </div>
-  <div>
-    <app-password-gen [(generatedPW)]="generatePassword"></app-password-gen>
-    {{ generatePassword }}
-  </div>
   <div class="card">
     <div class="card-header">
       <div class="row mb-2">
         <div class="col">
-          <input class="form-control form-control-lg" type="text" [(ngModel)]="formFields[0].data" placeholder="Title">
+          <input class="f: stringorm-control form-control-lg" type="text" [(ngModel)]="formFields[0].data" placeholder="Title">
         </div>
       </div>
     </div>
@@ -44,6 +62,9 @@
         <div class="row" *ngIf="formField.label !== 'Title'">
           <div class="col-1 mb-2">
             <div class="btn btn-sm btn-danger" [hidden]="i<=3" (click)="removeField(i)"><i class="fa fa-trash"></i></div>
+            <div class="btn btn-sm btn-primary" [hidden]="i!==2" data-bs-toggle="modal" data-bs-target="#passwordModal">
+              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sync" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-sync fa-w-16 fa-2x"><path fill="currentColor" d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z" class=""></path></svg>
+            </div>
           </div>
           <div class="col">
             <div class="row">
