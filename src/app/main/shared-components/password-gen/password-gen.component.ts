@@ -8,6 +8,13 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 export class PasswordGenComponent implements OnInit {
   @Input() generatedPW: string;
   @Output() generatedPWChange = new EventEmitter<string>();
+  public generatorSettings = {
+    useWords: false,
+    useNumbers: false,
+    useSymbols: false,
+    useUppercase: false,
+    useLowercase: false
+  };
 
   constructor() { }
 
