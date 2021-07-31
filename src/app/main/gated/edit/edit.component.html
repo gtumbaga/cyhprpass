@@ -26,9 +26,10 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div>
+        <div id="pw-gen">
+          <div class="presentation">{{ generatePassword }}</div>
           <app-password-gen [(generatedPW)]="generatePassword"></app-password-gen>
-          {{ generatePassword }}
+          
         </div>
       </div>
       <div class="modal-footer">
